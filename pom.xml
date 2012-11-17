@@ -1,13 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>jpc</groupId>
-	<artifactId>jpc_jpl</artifactId>
+	
+	<parent>
+      <groupId>org.sonatype.oss</groupId>
+      <artifactId>oss-parent</artifactId>
+      <version>7</version>
+    </parent>
+    
+	<groupId>com.github.java-prolog-connectivity</groupId>
+	<artifactId>jpc-jpl</artifactId>
 	<version>0.0.1-alpha-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JPC_JPL</name>
 	<description>A JPC bridge for the JPL library</description>
-	<url></url>
+	<url>https://github.com/sergio-castro/jpc-jpl</url>
   
     <licenses>
 	    <license>
@@ -16,10 +23,11 @@
 	    </license>
     </licenses>
   
-    <scm>
-      <connection></connection>
-      <url></url>
-    </scm>
+  <scm>
+    <connection>scm:git:git@github.com:sergio-castro/jpc.jpl.git</connection>
+    <developerConnection>scm:git:git@github.com:sergio-castro/jpc.jpl.git</developerConnection>
+    <url>git@github.com:sergio-castro/jpc.jpl.git</url>
+  </scm>
     
     <developers>
       <developer>
@@ -27,14 +35,28 @@
       </developer>
     </developers>
   
+    
 	<repositories>
+<!-- 
 		<repository>
 			<id>local-project-repository</id>
 			<url>file://${basedir}/maven/repository</url>
 		</repository>
+ -->
+		
+		<repository>
+         <id>snapshots-repo</id>
+         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+         <releases><enabled>false</enabled></releases>
+         <snapshots><enabled>true</enabled></snapshots>
+       </repository>
 	</repositories>
 
-	
+	  
+     
+  
+  
+  
 	<prerequisites>
 		<maven>2.2.1</maven>
 	</prerequisites>
@@ -60,14 +82,14 @@
 		</dependency>
 
 		<dependency>
-			<groupId>jpc</groupId>
+			<groupId>com.github.java-prolog-connectivity</groupId>
 			<artifactId>jpc</artifactId>
 			<version>0.0.1-alpha-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
-			<groupId>jpc</groupId>
-			<artifactId>jpc_examples</artifactId>
+			<groupId>com.github.java-prolog-connectivity</groupId>
+			<artifactId>jpc-examples</artifactId>
 			<version>0.0.1-alpha-SNAPSHOT</version>
 		</dependency>
 
@@ -86,7 +108,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>2.5.1</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -96,7 +118,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
+				<version>2.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -110,7 +132,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.5.1</version>
 
 				<configuration>
 					<includeScope>runtime</includeScope>
