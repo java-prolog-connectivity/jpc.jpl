@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jpc.engine.jpl.visitor.JpcToJplAdapterVisitor;
-import org.jpc.engine.jpl.visitor.JplToJpcAdapterVisitor;
 import org.jpc.term.Query;
 import org.jpc.term.Term;
 
 /**
  * An adapter to a JPL query
- * @author sergioc78
+ * @author sergioc
  *
  */
 public class JplQuery extends Query {

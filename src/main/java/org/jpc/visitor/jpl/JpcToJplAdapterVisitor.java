@@ -1,10 +1,10 @@
-package org.jpc.engine.jpl.visitor;
+package org.jpc.visitor.jpl;
 
-import org.jpc.engine.visitor.JpcStreamingVisitor;
 import org.jpc.term.Atom;
 import org.jpc.term.FloatTerm;
 import org.jpc.term.IntegerTerm;
 import org.jpc.term.Variable;
+import org.jpc.visitor.JpcStreamingVisitor;
 
 
 

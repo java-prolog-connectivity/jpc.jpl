@@ -6,16 +6,25 @@ import org.jpc.JpcPreferences;
 import org.jpc.engine.BootstrapLogicEngine;
 import org.jpc.engine.LogicEngineConfiguration;
 
-public class DefaultJplConfiguration extends LogicEngineConfiguration {
+public abstract class DefaultJplConfiguration extends LogicEngineConfiguration {
 
-	public static final String JPLPATH = "JPLPATH"; //path of the JPL library in the host computer. This will determine if the prolog engine is SWI or YAP
+	public static final String JPLPATH_ENV_VAR = "JPLPATH"; //environment variable with the path to the JPL library in the host computer. This will determine if the prolog engine is SWI or YAP
 	
 	@Override
 	public void configure() {
 		//configuring the JPL path according to an environment variable. So a JPL Prolog engine can be started
-		JPL.setNativeLibraryDir(new JpcPreferences().getVarOrDie(JPLPATH));
+		String jplPath = getJplPath();
+		JPL.setNativeLibraryDir(jplPath);
 	}
 
+	public String getJplPath() {
+		return new JpcPreferences().getVarOrDie(getJplPathEnvVar());
+	}
+	
+	public String getJplPathEnvVar() {
+		return JPLPATH_ENV_VAR;
+	}
+	
 	@Override
 	protected BootstrapLogicEngine createBootstrapLogicEngine() {
 		return new JplLogicEngine();
@@ -38,6 +47,20 @@ public class DefaultJplConfiguration extends LogicEngineConfiguration {
 		*/
 	}
 	
-
+	public static class DefaultJplSwiConfiguration extends DefaultJplConfiguration {
+		public static final String JPLPATH_SWI_ENV_VAR = "JPLPATH_SWI"; 
+		@Override
+		public String getJplPathEnvVar() {
+			return JPLPATH_SWI_ENV_VAR;
+		}
+	}
+	
+	public static class DefaultJplYapConfiguration extends DefaultJplConfiguration {
+		public static final String JPLPATH_YAP_ENV_VAR = "JPLPATH_YAP"; 
+		@Override
+		public String getJplPathEnvVar() {
+			return JPLPATH_YAP_ENV_VAR;
+		}
+	}
 	
 }

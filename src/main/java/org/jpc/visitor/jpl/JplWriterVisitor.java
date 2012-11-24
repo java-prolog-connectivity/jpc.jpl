@@ -1,4 +1,4 @@
-package org.jpc.engine.jpl.visitor;
+package org.jpc.visitor.jpl;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -12,7 +12,7 @@ import jpl.Variable;
 import org.jpc.engine.jpl.JplTermBuilder;
 import org.jpc.util.TermBuilder;
 
-public class JplTermWriterVisitor extends JplStreamingVisitor {
+public class JplWriterVisitor extends JplStreamingVisitor {
 
 	Deque<TermBuilder<jpl.Term>> queue = new LinkedList<>();
 	

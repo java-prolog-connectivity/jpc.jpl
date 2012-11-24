@@ -1,4 +1,4 @@
-package org.jpc.engine.jpl.visitor;
+package org.jpc.visitor.jpl;
 
 public abstract class JplStreamingVisitor {
 	

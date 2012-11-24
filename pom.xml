@@ -37,12 +37,6 @@
   
     
 	<repositories>
-<!-- 
-		<repository>
-			<id>local-project-repository</id>
-			<url>file://${basedir}/maven/repository</url>
-		</repository>
- -->
 		
 		<repository>
          <id>snapshots-repo</id>
@@ -81,6 +75,13 @@
 			<version>[1.7.2,]</version>
 		</dependency>
 
+ 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>[1.7.2,]</version>
+<!-- 			<optional>true</optional> -->
+		</dependency> 
+	
 		<dependency>
 			<groupId>com.github.java-prolog-connectivity</groupId>
 			<artifactId>jpc</artifactId>
@@ -89,8 +90,24 @@
 
 		<dependency>
 			<groupId>com.github.java-prolog-connectivity</groupId>
+			<artifactId>jpc-engine-test</artifactId>
+			<version>0.0.1-alpha-SNAPSHOT</version>
+  			<type>test-jar</type>
+      		<!-- <scope>test</scope> -->
+		</dependency>
+		 
+		<dependency>
+			<groupId>com.github.java-prolog-connectivity</groupId>
 			<artifactId>jpc-examples</artifactId>
 			<version>0.0.1-alpha-SNAPSHOT</version>
+		</dependency>
+		 
+		<dependency>
+			<groupId>com.github.java-prolog-connectivity</groupId>
+			<artifactId>jpc-examples</artifactId>
+			<version>0.0.1-alpha-SNAPSHOT</version>
+			 <type>test-jar</type>
+			<!-- <scope>test</scope> -->
 		</dependency>
 
 		<dependency>
@@ -159,7 +176,6 @@
 				<executions>
 					<execution>
 						<id>jar-test-classes</id>
-						<phase>package</phase>
 						<goals>
 							<goal>test-jar</goal>
 						</goals>

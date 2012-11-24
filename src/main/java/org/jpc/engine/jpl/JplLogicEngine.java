@@ -1,7 +1,6 @@
 package org.jpc.engine.jpl;
 
 import org.jpc.engine.BootstrapLogicEngine;
-import org.jpc.engine.jpl.visitor.JplToJpcAdapterVisitor;
 import org.jpc.term.Query;
 import org.jpc.term.Term;
 import org.slf4j.Logger;
