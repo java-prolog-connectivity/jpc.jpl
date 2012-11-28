@@ -93,7 +93,7 @@
 			<artifactId>jpc-engine-test</artifactId>
 			<version>0.0.1-alpha-SNAPSHOT</version>
   			<type>test-jar</type>
-      		<!-- <scope>test</scope> -->
+      		<scope>test</scope>
 		</dependency>
 		 
 		<dependency>
@@ -107,7 +107,7 @@
 			<artifactId>jpc-examples</artifactId>
 			<version>0.0.1-alpha-SNAPSHOT</version>
 			 <type>test-jar</type>
-			<!-- <scope>test</scope> -->
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -146,6 +146,20 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
