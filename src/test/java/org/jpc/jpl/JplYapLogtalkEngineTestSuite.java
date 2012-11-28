@@ -1,15 +1,12 @@
-package org.jpc.engine;
+package org.jpc.jpl;
 
-import org.jpc.LogicEngineTestSuite;
 import org.jpc.engine.jpl.DefaultJplConfiguration.DefaultJplYapConfiguration;
 import org.jpc.util.ThreadLocalLogicEngine;
 import org.junit.BeforeClass;
 
-public class JplLogicEngineTestSuite extends LogicEngineTestSuite {
-
+public class JplYapLogtalkEngineTestSuite extends JplLogtalkEngineTestSuite {
 	@BeforeClass
 	public static void setUp() {
 		ThreadLocalLogicEngine.setLogicEngine(new DefaultJplYapConfiguration().getEngine());
 	}
-	
 }

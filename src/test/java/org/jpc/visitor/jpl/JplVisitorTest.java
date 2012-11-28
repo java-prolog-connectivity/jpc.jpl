@@ -1,4 +1,4 @@
-package org.jpc;
+package org.jpc.visitor.jpl;
 
 
 import static java.util.Arrays.asList;
@@ -14,7 +14,7 @@ import org.jpc.visitor.jpl.JplToJpcAdapterVisitor;
 import org.jpc.visitor.jpl.JplWriterVisitor;
 import org.junit.Test;
 
-public class JplTransformationTest {
+public class JplVisitorTest {
 
 	jpl.Term t1Jpl = new jpl.Compound("name", new jpl.Term[] {new jpl.Compound("name2", new jpl.Term[] {new jpl.Variable("A")})});
 	Term t1Jpc = new Compound("name", asList(new Compound("name2", asList(new Variable("A")))));

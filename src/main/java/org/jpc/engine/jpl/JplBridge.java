@@ -7,6 +7,11 @@ import org.jpc.visitor.jpl.JpcToJplAdapterVisitor;
 import org.jpc.visitor.jpl.JplToJpcAdapterVisitor;
 import org.jpc.visitor.jpl.JplWriterVisitor;
 
+/**
+ * A utility class for transforming Jpc terms to Jpl and vice-versa
+ * @author sergioc
+ *
+ */
 public class JplBridge {
 
 	public static jpl.Term fromJpcToJpl(Term term) {

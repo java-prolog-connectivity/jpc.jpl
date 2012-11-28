@@ -1,9 +1,10 @@
-package org.jpc.engine.jpl;
+package org.jpc.term.jpl;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jpc.engine.jpl.JplBridge;
 import org.jpc.term.Query;
 import org.jpc.term.Term;
 

@@ -9,7 +9,7 @@ import jpl.Float;
 import jpl.Integer;
 import jpl.Variable;
 
-import org.jpc.engine.jpl.JplTermBuilder;
+import org.jpc.term.jpl.JplTermBuilder;
 import org.jpc.util.TermBuilder;
 
 public class JplWriterVisitor extends JplStreamingVisitor {

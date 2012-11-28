@@ -1,4 +1,4 @@
-package org.jpc.engine.jpl;
+package org.jpc.term.jpl;
 
 import java.util.List;
 import org.jpc.util.TermBuilder;

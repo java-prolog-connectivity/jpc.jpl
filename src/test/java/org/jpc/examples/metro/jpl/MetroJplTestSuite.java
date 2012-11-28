@@ -1,6 +1,6 @@
-package org.jpc.examples.metro;
+package org.jpc.examples.metro.jpl;
 
-import org.jpc.engine.jpl.DefaultJplConfiguration.DefaultJplYapConfiguration;
+import org.jpc.engine.jpl.DefaultJplConfiguration.DefaultJplSwiConfiguration;
 import org.jpc.examples.metro.MetroTestSuite;
 import org.jpc.util.ThreadLocalLogicEngine;
 import org.junit.BeforeClass;
@@ -8,16 +8,21 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+/**
+ * This test suit exists only for testing individually the metro example for the jpl implementation.
+ * It will be deleted soon...
+ * @author sergioc
+ *
+ */
 @RunWith(Suite.class)
-@SuiteClasses({//LogicEngineTestSuite.class, 
+@SuiteClasses({
 	MetroTestSuite.class})
-public class MetroJplTestSuite {//extends MetroTestSuite {
+public class MetroJplTestSuite {
 	
 	@BeforeClass
     public static void oneTimeSetUp() {
-		ThreadLocalLogicEngine.setLogicEngine(new DefaultJplYapConfiguration().getEngine());
+		//ThreadLocalLogicEngine.setLogicEngine(new DefaultJplYapConfiguration().getEngine());
 		//ThreadLocalLogicEngine.setLogicEngine(new DefaultJplSwiConfiguration().getEngine());
-		//assertTrue(MetroImp.loadAll());
     }
 
 }
