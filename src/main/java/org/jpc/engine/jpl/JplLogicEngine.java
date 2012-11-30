@@ -1,9 +1,8 @@
 package org.jpc.engine.jpl;
 
 import org.jpc.engine.BootstrapLogicEngine;
-import org.jpc.term.Query;
+import org.jpc.engine.Query;
 import org.jpc.term.Term;
-import org.jpc.term.jpl.JplQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

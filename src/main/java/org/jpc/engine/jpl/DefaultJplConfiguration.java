@@ -37,6 +37,7 @@ public abstract class DefaultJplConfiguration extends LogicEngineConfiguration {
 		/**
 		 * According to the JPL documentation, the getActualInitArgs() method returns null if the JPL Prolog engine has not been initialized 
 		 * The problem in fact is that this throws an error, and it is not possible to initialize the logic engine afterwards
+		 * Then we cannot test if JPL has already been initialized using that
 		 */
 		/*
 		try {
