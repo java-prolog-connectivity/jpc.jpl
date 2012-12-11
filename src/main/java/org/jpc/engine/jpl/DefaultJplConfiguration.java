@@ -3,12 +3,12 @@ package org.jpc.engine.jpl;
 import jpl.JPL;
 
 import org.jpc.JpcPreferences;
-import org.jpc.engine.BootstrapLogicEngine;
-import org.jpc.engine.LogicEngineConfiguration;
+import org.jpc.engine.prolog.BootstrapPrologEngine;
+import org.jpc.engine.prolog.PrologEngineConfiguration;
 
-public abstract class DefaultJplConfiguration extends LogicEngineConfiguration {
+public abstract class DefaultJplConfiguration extends PrologEngineConfiguration {
 
-	public static final String JPLPATH_ENV_VAR = "JPLPATH"; //environment variable with the path to the JPL library in the host computer. This will determine if the prolog engine is SWI or YAP
+	public static final String JPLPATH_ENV_VAR = "JPLPATH"; //environment variable with the path to the JPL library. This will determine if the prolog engine is SWI or YAP
 	
 	@Override
 	public void configure() {
@@ -26,7 +26,7 @@ public abstract class DefaultJplConfiguration extends LogicEngineConfiguration {
 	}
 	
 	@Override
-	protected BootstrapLogicEngine createBootstrapLogicEngine() {
+	protected BootstrapPrologEngine createBootstrapEngine() {
 		return new JplLogicEngine();
 	}
 	

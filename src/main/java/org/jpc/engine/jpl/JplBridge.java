@@ -15,13 +15,13 @@ public class JplBridge {
 
 	public static jpl.Term fromJpcToJpl(Term term) {
 		JplTermWriter jplTermWriter = new JplTermWriter();
-		term.streamTo(jplTermWriter);
+		term.read(jplTermWriter);
 		return jplTermWriter.getTerms().get(0);
 	} 
 	
 	public static Term fromJplToJpc(jpl.Term term) {
 		JpcTermWriter jpcTermWriter = new JpcTermWriter();
-		new JplTermReader(jpcTermWriter).stream(term);
+		new JplTermReader(term, jpcTermWriter).read();
 		return jpcTermWriter.getTerms().get(0);
 	} 
 

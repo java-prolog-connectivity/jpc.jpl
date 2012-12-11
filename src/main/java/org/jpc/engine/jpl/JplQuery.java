@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jpc.engine.Query;
+import org.jpc.engine.prolog.Query;
 import org.jpc.term.Term;
+import org.jpc.term.TermConvertable;
 
 /**
  * An adapter to a JPL query
@@ -16,9 +17,9 @@ public class JplQuery extends Query {
 
 	private jpl.Query jplQuery;
 	
-	public JplQuery(Term goal) {
-		super(goal);
-		jpl.Term jplGoal = JplBridge.fromJpcToJpl(goal);
+	public JplQuery(TermConvertable termConvertable) {
+		super(termConvertable);
+		jpl.Term jplGoal = JplBridge.fromJpcToJpl(goal());
 		jplQuery = new jpl.Query(jplGoal);
 	}
 

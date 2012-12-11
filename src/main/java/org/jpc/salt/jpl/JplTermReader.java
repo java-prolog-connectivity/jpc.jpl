@@ -11,28 +11,36 @@ import org.jpc.salt.TermReader;
  */
 public class JplTermReader extends TermReader {
 
-	public JplTermReader(ContentHandler contentHandler) {
+	private jpl.Term jplTerm;
+	
+	public JplTermReader(jpl.Term jplTerm, ContentHandler contentHandler) {
 		super(contentHandler);
+		this.jplTerm = jplTerm;
 	}
 
-	public void stream(jpl.Term term) {
+	@Override
+	public void read() {
+		read(jplTerm);
+	}
+	
+	public void read(jpl.Term term) {
 		if(term.isInteger()) {
 			jpl.Integer jplInteger = (jpl.Integer) term;
-			startIntegerTerm(jplInteger.longValue());
+			getContentHandler().startIntegerTerm(jplInteger.longValue());
 		} else 	if(term.isFloat()) {
 			jpl.Float jplFloat = (jpl.Float) term;
-			startFloatTerm(jplFloat.doubleValue());
+			getContentHandler().startFloatTerm(jplFloat.doubleValue());
 		} else if (term.isVariable()) {
-			startVariable(term.name());
+			getContentHandler().startVariable(term.name());
 		} else if (term.isAtom()) {
-			startAtom(term.name());
+			getContentHandler().startAtom(term.name());
 		} else if(term.isCompound()) {
-			startCompound();
-			startAtom(term.name());
+			getContentHandler().startCompound();
+			getContentHandler().startAtom(term.name());
 			for(jpl.Term child : term.args()) {
-				stream(child);
+				read(child);
 			}
-			endCompound();
+			getContentHandler().endCompound();
 		} else
 			throw new RuntimeException("Unrecognized JPL term: " + term);
 	}
