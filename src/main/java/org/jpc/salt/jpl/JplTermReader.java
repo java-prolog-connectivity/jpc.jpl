@@ -1,7 +1,7 @@
 package org.jpc.salt.jpl;
 
 
-import org.jpc.salt.ContentHandler;
+import org.jpc.salt.TermContentHandler;
 import org.jpc.salt.TermReader;
 
 /**
@@ -13,7 +13,7 @@ public class JplTermReader extends TermReader {
 
 	private jpl.Term jplTerm;
 	
-	public JplTermReader(jpl.Term jplTerm, ContentHandler contentHandler) {
+	public JplTermReader(jpl.Term jplTerm, TermContentHandler contentHandler) {
 		super(contentHandler);
 		this.jplTerm = jplTerm;
 	}

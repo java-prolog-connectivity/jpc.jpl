@@ -5,6 +5,7 @@ import org.jpc.salt.JpcTermWriter;
 import org.jpc.salt.jpl.JplTermReader;
 import org.jpc.salt.jpl.JplTermWriter;
 import org.jpc.term.Term;
+import org.jpc.term.TermConvertable;
 
 /**
  * A utility class for transforming Jpc terms to Jpl and vice-versa
@@ -13,9 +14,9 @@ import org.jpc.term.Term;
  */
 public class JplBridge {
 
-	public static jpl.Term fromJpcToJpl(Term term) {
+	public static jpl.Term fromJpcToJpl(TermConvertable termConvertable) {
 		JplTermWriter jplTermWriter = new JplTermWriter();
-		term.read(jplTermWriter);
+		termConvertable.asTerm().read(jplTermWriter);
 		return jplTermWriter.getTerms().get(0);
 	} 
 	

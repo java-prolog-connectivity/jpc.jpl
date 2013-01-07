@@ -1,31 +1,31 @@
 package org.jpc.salt.jpl;
 
-import org.jpc.salt.ContentHandler;
+import org.jpc.salt.TermContentHandler;
 import org.jpc.salt.TermBuilder;
 import org.jpc.salt.TermWriter;
 
 public class JplTermWriter extends TermWriter<jpl.Term> {
 
 	@Override
-	public ContentHandler startIntegerTerm(long value) {
+	public TermContentHandler startIntegerTerm(long value) {
 		process(new jpl.Integer(value));
 		return this;
 	}
 
 	@Override
-	public ContentHandler startFloatTerm(double value) {
+	public TermContentHandler startFloatTerm(double value) {
 		process(new jpl.Float(value));
 		return this;
 	}
 
 	@Override
-	public ContentHandler startVariable(String name) {
+	public TermContentHandler startVariable(String name) {
 		process(new jpl.Variable(name));
 		return this;
 	}
 	
 	@Override
-	public ContentHandler startAtom(String name) {
+	public TermContentHandler startAtom(String name) {
 		process(new jpl.Atom(name));
 		return this;
 	}

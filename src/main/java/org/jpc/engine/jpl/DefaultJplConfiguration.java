@@ -2,9 +2,9 @@ package org.jpc.engine.jpl;
 
 import jpl.JPL;
 
-import org.jpc.JpcPreferences;
 import org.jpc.engine.prolog.BootstrapPrologEngine;
 import org.jpc.engine.prolog.PrologEngineConfiguration;
+import org.jpc.util.JpcPreferences;
 
 public abstract class DefaultJplConfiguration extends PrologEngineConfiguration {
 
