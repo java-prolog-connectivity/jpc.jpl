@@ -1,6 +1,5 @@
 package org.jpc.examples.metro.jpl;
 
-import org.jpc.engine.jpl.DefaultJplConfiguration.DefaultJplSwiConfiguration;
 import org.jpc.examples.metro.MetroTestSuite;
 import org.jpc.util.ThreadLocalLogicEngine;
 import org.junit.BeforeClass;

@@ -1,7 +1,6 @@
 package org.jpc.jpl;
 
 import org.jpc.LogtalkEngineTestSuite;
-import org.jpc.engine.jpl.DefaultJplConfiguration.DefaultJplYapConfiguration;
 import org.jpc.examples.LogtalkExamplesTestSuite;
 import org.jpc.util.ThreadLocalLogicEngine;
 import org.junit.BeforeClass;

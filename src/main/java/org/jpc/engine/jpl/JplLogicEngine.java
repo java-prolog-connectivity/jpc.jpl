@@ -20,7 +20,7 @@ public class JplLogicEngine extends BootstrapPrologEngine {
 	
 
 	@Override
-	public Query createQuery(TermConvertable termConvertable) {
+	public Query query(TermConvertable termConvertable) {
 		return new JplQuery(new PrologEngine(this), termConvertable);
 	}
 
@@ -40,7 +40,7 @@ public class JplLogicEngine extends BootstrapPrologEngine {
 										new Compound("writeq",
 											asList(new Atom(s)))
 											));
-		Query query = createQuery(goal);
+		Query query = query(goal);
 		String escaped = ((Atom)query.oneSolution().get(escapeVarName)).getName();
 		return escaped;
 	}

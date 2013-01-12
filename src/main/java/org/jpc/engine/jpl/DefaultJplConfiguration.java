@@ -8,6 +8,7 @@ import org.jpc.util.JpcPreferences;
 
 public abstract class DefaultJplConfiguration extends PrologEngineConfiguration {
 
+	public static final String JPL_LIBRARY_NAME = "JPL";
 	public static final String JPLPATH_ENV_VAR = "JPLPATH"; //environment variable with the path to the JPL library. This will determine if the prolog engine is SWI or YAP
 	
 	@Override
@@ -32,11 +33,11 @@ public abstract class DefaultJplConfiguration extends PrologEngineConfiguration 
 	
 	@Override
 	public boolean isConfigured() {
-			return false; //TODO find a way to see if JPL has been initialized (in any case the initialization is quite light so it does not harm if it happens many times, but it should be fixed...)
+			return false; //TODO find a way to see if JPL has been configured (in any case the JPL configuration is quite light so it does not harm if it happens many times, but it should be fixed...)
 		
 		/**
 		 * According to the JPL documentation, the getActualInitArgs() method returns null if the JPL Prolog engine has not been initialized 
-		 * The problem in fact is that this throws an error, and it is not possible to initialize the logic engine afterwards
+		 * The problem is that this throws an error, and it is not possible to initialize the logic engine afterwards
 		 * Then we cannot test if JPL has already been initialized using that
 		 */
 		/*
@@ -48,20 +49,9 @@ public abstract class DefaultJplConfiguration extends PrologEngineConfiguration 
 		*/
 	}
 	
-	public static class DefaultJplSwiConfiguration extends DefaultJplConfiguration {
-		public static final String JPLPATH_SWI_ENV_VAR = "JPLPATH_SWI"; 
-		@Override
-		public String getJplPathEnvVar() {
-			return JPLPATH_SWI_ENV_VAR;
-		}
-	}
-	
-	public static class DefaultJplYapConfiguration extends DefaultJplConfiguration {
-		public static final String JPLPATH_YAP_ENV_VAR = "JPLPATH_YAP"; 
-		@Override
-		public String getJplPathEnvVar() {
-			return JPLPATH_YAP_ENV_VAR;
-		}
+	@Override
+	public String getLibraryName() {
+		return JPL_LIBRARY_NAME;
 	}
 	
 }

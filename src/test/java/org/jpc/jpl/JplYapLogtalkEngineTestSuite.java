@@ -1,6 +1,6 @@
 package org.jpc.jpl;
 
-import org.jpc.engine.jpl.DefaultJplConfiguration.DefaultJplYapConfiguration;
+import org.jpc.engine.jpl.DefaultJplYapConfiguration;
 import org.jpc.util.ThreadLocalLogicEngine;
 import org.junit.BeforeClass;
 

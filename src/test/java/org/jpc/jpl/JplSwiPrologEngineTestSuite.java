@@ -1,6 +1,6 @@
 package org.jpc.jpl;
 
-import org.jpc.engine.jpl.DefaultJplConfiguration.DefaultJplSwiConfiguration;
+import org.jpc.engine.jpl.DefaultJplSwiConfiguration;
 import org.jpc.util.ThreadLocalLogicEngine;
 import org.junit.BeforeClass;
 
