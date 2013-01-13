@@ -1,12 +1,12 @@
 package org.jpc.jpl;
 
 import org.jpc.engine.jpl.DefaultJplYapConfiguration;
-import org.jpc.util.ThreadLocalLogicEngine;
+import org.jpc.util.concurrent.ThreadLocalPrologEngine;
 import org.junit.BeforeClass;
 
 public class JplYapPrologEngineTestSuite extends JplPrologEngineTestSuite {
 	@BeforeClass
 	public static void setUp() {
-		ThreadLocalLogicEngine.setLogicEngine(new DefaultJplYapConfiguration().getEngine());
+		ThreadLocalPrologEngine.setPrologEngine(new DefaultJplYapConfiguration().getEngine());
 	}
 }

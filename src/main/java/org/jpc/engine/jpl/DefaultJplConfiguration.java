@@ -28,7 +28,7 @@ public abstract class DefaultJplConfiguration extends PrologEngineConfiguration 
 	
 	@Override
 	protected BootstrapPrologEngine createBootstrapEngine() {
-		return new JplLogicEngine();
+		return new JplPrologEngine();
 	}
 	
 	@Override

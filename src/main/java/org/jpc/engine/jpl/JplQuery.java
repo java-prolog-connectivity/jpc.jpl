@@ -18,8 +18,8 @@ public class JplQuery extends Query {
 
 	private jpl.Query jplQuery;
 	
-	public JplQuery(PrologEngine logicEngine, TermConvertable termConvertable) {
-		super(logicEngine, termConvertable);
+	public JplQuery(PrologEngine prologEngine, TermConvertable termConvertable) {
+		super(prologEngine, termConvertable);
 		jpl.Term jplGoal = JplBridge.fromJpcToJpl(this);
 		jplQuery = new jpl.Query(jplGoal);
 	}

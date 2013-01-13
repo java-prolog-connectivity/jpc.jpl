@@ -1,7 +1,7 @@
 package org.jpc.examples.metro.jpl;
 
 import org.jpc.examples.metro.MetroTestSuite;
-import org.jpc.util.ThreadLocalLogicEngine;
+import org.jpc.util.concurrent.ThreadLocalPrologEngine;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -20,8 +20,8 @@ public class MetroJplTestSuite {
 	
 	@BeforeClass
     public static void oneTimeSetUp() {
-		//ThreadLocalLogicEngine.setLogicEngine(new DefaultJplYapConfiguration().getEngine());
-		//ThreadLocalLogicEngine.setLogicEngine(new DefaultJplSwiConfiguration().getEngine());
+		//ThreadLocalPrologEngine.setPrologEngine(new DefaultJplYapConfiguration().getEngine());
+		//ThreadLocalPrologEngine.setPrologEngine(new DefaultJplSwiConfiguration().getEngine());
     }
 
 }

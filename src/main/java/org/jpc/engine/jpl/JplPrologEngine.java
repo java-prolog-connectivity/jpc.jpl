@@ -14,9 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class JplLogicEngine extends BootstrapPrologEngine {
+public class JplPrologEngine extends BootstrapPrologEngine {
 
-	private static Logger logger = LoggerFactory.getLogger(JplLogicEngine.class);
+	private static Logger logger = LoggerFactory.getLogger(JplPrologEngine.class);
 	
 
 	@Override

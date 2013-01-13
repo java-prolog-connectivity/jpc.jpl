@@ -12,7 +12,7 @@ public class DefaultJplYapConfiguration extends DefaultJplConfiguration {
 	}
 	
 	@Override
-	public String getLogicEngineName() {
+	public String getEngineName() {
 		return YAP;
 	}
 

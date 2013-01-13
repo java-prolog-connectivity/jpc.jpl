@@ -1,12 +1,12 @@
 package org.jpc.jpl;
 
 import org.jpc.engine.jpl.DefaultJplSwiConfiguration;
-import org.jpc.util.ThreadLocalLogicEngine;
+import org.jpc.util.concurrent.ThreadLocalPrologEngine;
 import org.junit.BeforeClass;
 
 public class JplSwiPrologEngineTestSuite extends JplPrologEngineTestSuite {
 	@BeforeClass
 	public static void setUp() {
-		ThreadLocalLogicEngine.setLogicEngine(new DefaultJplSwiConfiguration().getEngine());
+		ThreadLocalPrologEngine.setPrologEngine(new DefaultJplSwiConfiguration().getEngine());
 	}
 }

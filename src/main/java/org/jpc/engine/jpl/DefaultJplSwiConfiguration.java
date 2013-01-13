@@ -12,7 +12,7 @@ public class DefaultJplSwiConfiguration extends DefaultJplConfiguration {
 	}
 	
 	@Override
-	public String getLogicEngineName() {
+	public String getEngineName() {
 		return SWI;
 	}
 
