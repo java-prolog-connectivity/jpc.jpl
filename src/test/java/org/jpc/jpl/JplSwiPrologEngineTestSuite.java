@@ -7,6 +7,6 @@ import org.junit.BeforeClass;
 public class JplSwiPrologEngineTestSuite extends JplPrologEngineTestSuite {
 	@BeforeClass
 	public static void setUp() {
-		ThreadLocalPrologEngine.setPrologEngine(new DefaultJplSwiConfiguration().getEngine());
+		ThreadLocalPrologEngine.setPrologEngine(new DefaultJplSwiConfiguration().createPrologEngine());
 	}
 }

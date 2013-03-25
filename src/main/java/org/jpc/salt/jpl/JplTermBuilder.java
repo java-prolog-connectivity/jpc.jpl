@@ -6,16 +6,16 @@ import org.jpc.salt.TermBuilder;
 
 public class JplTermBuilder extends TermBuilder<jpl.Term> {
 
-	public JplTermBuilder() {
-	}
-	
-	public JplTermBuilder(jpl.Term functor) {
-		super(functor);
-	}
-	
-	public JplTermBuilder(jpl.Term functor, List<jpl.Term> args) {
-		super(functor, args);
-	}
+//	public JplTermBuilder() {
+//	}
+//	
+//	public JplTermBuilder(jpl.Term functor) {
+//		super(functor);
+//	}
+//	
+//	public JplTermBuilder(jpl.Term functor, List<jpl.Term> args) {
+//		super(functor, args);
+//	}
 	
 	@Override
 	public jpl.Term build() {
@@ -30,4 +30,5 @@ public class JplTermBuilder extends TermBuilder<jpl.Term> {
 		}
 		return builtTerm;
 	}
+
 }
