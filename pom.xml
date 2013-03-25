@@ -12,7 +12,7 @@
 	<artifactId>jpc-jpl</artifactId>
 	<version>0.0.1-alpha-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>JPC_JPL</name>
+	<name>JPC-JPL bridge</name>
 	<description>A JPC bridge for the JPL library</description>
 	<url>https://github.com/sergio-castro/jpc-jpl</url>
   
@@ -44,6 +44,7 @@
          <releases><enabled>false</enabled></releases>
          <snapshots><enabled>true</enabled></snapshots>
        </repository>
+
 	</repositories>
 
 	  
@@ -102,13 +103,13 @@
 			<version>0.0.1-alpha-SNAPSHOT</version>
 		</dependency>
 		 
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.github.java-prolog-connectivity</groupId>
 			<artifactId>jpc-examples</artifactId>
 			<version>0.0.1-alpha-SNAPSHOT</version>
 			 <type>test-jar</type>
 			<scope>test</scope>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>jpl</groupId>
