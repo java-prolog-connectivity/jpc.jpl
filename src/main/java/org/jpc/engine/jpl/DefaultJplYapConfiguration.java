@@ -7,7 +7,7 @@ public class DefaultJplYapConfiguration extends DefaultJplConfiguration {
 	public static final String JPLPATH_YAP_ENV_VAR = "JPLPATH_YAP";
 	
 	@Override
-	public String getJplPathEnvVar() {
+	public String getJplPathPropertyVar() {
 		return JPLPATH_YAP_ENV_VAR;
 	}
 	

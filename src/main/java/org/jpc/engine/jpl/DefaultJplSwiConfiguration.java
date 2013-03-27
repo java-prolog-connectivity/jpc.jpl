@@ -7,7 +7,7 @@ public class DefaultJplSwiConfiguration extends DefaultJplConfiguration {
 	public static final String JPLPATH_SWI_ENV_VAR = "JPLPATH_SWI"; 
 	
 	@Override
-	public String getJplPathEnvVar() {
+	public String getJplPathPropertyVar() {
 		return JPLPATH_SWI_ENV_VAR;
 	}
 	

@@ -1,14 +1,9 @@
 package org.jpc.engine.jpl;
 
-import static java.util.Arrays.asList;
-
 import org.jpc.Jpc;
 import org.jpc.engine.prolog.AbstractPrologEngine;
 import org.jpc.query.Query;
-import org.jpc.term.Atom;
-import org.jpc.term.Compound;
 import org.jpc.term.Term;
-import org.jpc.term.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +35,8 @@ public class JplPrologEngine extends AbstractPrologEngine {
 	}
 	
 	@Override
-	public Query basicQuery(Term term, Jpc context) {
-		return new JplQuery(this, term, context);
+	public Query basicQuery(Term goal, Jpc context) {
+		return new JplQuery(this, goal, context);
 	}
 
 }

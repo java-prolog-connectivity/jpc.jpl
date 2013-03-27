@@ -15,7 +15,7 @@ import org.jpc.term.Term;
 import org.jpc.term.Variable;
 import org.junit.Test;
 
-public class TransformationTest {
+public class JplTransformationTest {
 
 	jpl.Term t1Jpl = new jpl.Compound("name", new jpl.Term[] {new jpl.Compound("name2", new jpl.Term[] {new jpl.Atom("atom1"), new jpl.Integer(-10), new jpl.Float(10.5), new jpl.Variable("A"), new jpl.Variable("_A")})});
 	Term t1Jpc = new Compound("name", asList(new Compound("name2", asList(new Atom("atom1"), new IntegerTerm(-10), new FloatTerm(10.5), new Variable("A"), new Variable("_A")))));

@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
 import org.jpc.Jpc;
-import org.jpc.engine.prolog.PrologEngine;
 import org.jpc.query.PrologQuery;
 import org.jpc.term.Term;
 
@@ -19,7 +18,7 @@ public class JplQuery extends PrologQuery {
 
 	private jpl.Query jplQuery;
 	
-	public JplQuery(PrologEngine prologEngine, Term term, Jpc context) {
+	public JplQuery(JplPrologEngine prologEngine, Term term, Jpc context) {
 		super(prologEngine, term, context);
 		jpl.Term jplGoal = JplBridge.fromJpcToJpl(term);
 		jplQuery = new jpl.Query(jplGoal);

@@ -2,7 +2,7 @@ package org.jpc.jpl;
 
 import org.jpc.PrologEngineTestSuite;
 import org.jpc.examples.PrologExamplesTestSuite;
-import org.jpc.salt.jpl.TransformationTest;
+import org.jpc.salt.jpl.JplTransformationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -13,5 +13,5 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({PrologEngineTestSuite.class, PrologExamplesTestSuite.class, TransformationTest.class})
+@SuiteClasses({PrologEngineTestSuite.class, PrologExamplesTestSuite.class, JplTransformationTest.class})
 public abstract class JplPrologEngineTestSuite {}
