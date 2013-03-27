@@ -2,7 +2,6 @@ package org.jpc.engine.jpl;
 
 import jpl.JPL;
 
-import org.jpc.JpcException;
 import org.jpc.engine.prolog.PrologEngine;
 import org.jpc.engine.prolog.configuration.PrologEngineConfiguration;
 import org.slf4j.Logger;
@@ -19,6 +18,7 @@ public abstract class DefaultJplConfiguration extends PrologEngineConfiguration 
 	
 	@Override
 	public boolean configure() {
+		JPL.setDTMMode(false); //so all the variables (including the ones starting with '_') will be returned. Otherwise those variables will be excluded from the result. The anonymous variable '_' is never returned.
 		jplPath = getJplPath();
 		if(jplPath != null && !jplPath.isEmpty()) {
 			JPL.setNativeLibraryDir(jplPath); //configuring the JPL path according to an environment variable.
