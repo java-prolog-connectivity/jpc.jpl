@@ -18,9 +18,9 @@ public class JplQuery extends PrologQuery {
 
 	private jpl.Query jplQuery;
 	
-	public JplQuery(JplPrologEngine prologEngine, Term term, Jpc context) {
-		super(prologEngine, term, context);
-		jpl.Term jplGoal = JplBridge.fromJpcToJpl(term);
+	public JplQuery(JplPrologEngine prologEngine, Term goal, boolean errorHandledQuery, Jpc context) {
+		super(prologEngine, goal, errorHandledQuery, context);
+		jpl.Term jplGoal = JplBridge.fromJpcToJpl(getInstrumentedGoal());
 		jplQuery = new jpl.Query(jplGoal);
 	}
 
@@ -34,11 +34,6 @@ public class JplQuery extends PrologQuery {
 	@Override
 	protected void basicClose() {
 		jplQuery.close();
-	}
-
-	@Override
-	protected void basicRewind() {
-		jplQuery.rewind();
 	}
 
 	@Override

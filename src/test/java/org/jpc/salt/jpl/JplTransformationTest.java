@@ -24,21 +24,21 @@ public class JplTransformationTest {
 	public void testJplToJpl() {
 		JplTermWriter termWriter = new JplTermWriter();
 		new JplTermReader(t1Jpl, termWriter).read();
-		assertEquals(t1Jpl, termWriter.getTerms().get(0));
+		assertEquals(t1Jpl, termWriter.getFirst());
 	}
 	
 	@Test
 	public void testJplToJpc() {
 		JpcTermWriter jpcTermWriter = new JpcTermWriter();
 		new JplTermReader(t1Jpl, jpcTermWriter).read();
-		assertEquals(t1Jpc, jpcTermWriter.getTerms().get(0));
+		assertEquals(t1Jpc, jpcTermWriter.getFirst());
 	}
 	
 	@Test
 	public void testJpcToJpl() {
 		JplTermWriter jplTermWriter = new JplTermWriter();
 		t1Jpc.read(jplTermWriter);
-		assertEquals(t1Jpl, jplTermWriter.getTerms().get(0));
+		assertEquals(t1Jpl, jplTermWriter.getFirst());
 	}
 	
 }
