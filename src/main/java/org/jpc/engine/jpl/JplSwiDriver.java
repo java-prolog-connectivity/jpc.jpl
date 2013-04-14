@@ -2,8 +2,8 @@ package org.jpc.engine.jpl;
 
 
 
-public class DefaultJplSwiConfiguration extends DefaultJplConfiguration {
-	public static final String SWI = "swi";
+public class JplSwiDriver extends JplDriver {
+	public static final String SWI = "SWI";
 	public static final String JPLPATH_SWI_ENV_VAR = "JPLPATH_SWI"; 
 	
 	@Override
