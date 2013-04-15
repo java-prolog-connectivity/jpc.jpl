@@ -17,7 +17,7 @@ public class JplPrologEngine extends AbstractPrologEngine {
 	}
 	
 	@Override
-	public boolean shutdown() {
+	public boolean close() {
 		throw new UnsupportedOperationException();
 //		logger.info("Shutting down the JPL prolog engine ...");
 //		boolean result = query(new Atom("halt")).hasSolution(); //WARNING: the Java process would also dye. Commented out until finding another way to halt the JPL logic engine.
@@ -26,6 +26,11 @@ public class JplPrologEngine extends AbstractPrologEngine {
 //		else
 //			logger.warn("Impossible to shut down the prolog engine.");
 //		return result;
+	}
+	
+	@Override
+	public boolean isCloseable() {
+		return false;
 	}
 	
 	@Override
@@ -38,5 +43,7 @@ public class JplPrologEngine extends AbstractPrologEngine {
 	public Query basicQuery(Term goal, boolean errorHandledQuery, Jpc context) {
 		return new JplQuery(this, goal, errorHandledQuery, context);
 	}
+
+
 
 }
