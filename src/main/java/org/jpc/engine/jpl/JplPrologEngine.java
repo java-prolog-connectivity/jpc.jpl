@@ -10,14 +10,9 @@ import org.slf4j.LoggerFactory;
 public class JplPrologEngine extends AbstractPrologEngine {
 
 	private static Logger logger = LoggerFactory.getLogger(JplPrologEngine.class);
-	
+
 	@Override
-	public boolean interrupt() {
-		throw new UnsupportedOperationException();
-	}
-	
-	@Override
-	public boolean close() {
+	public void close() {
 		throw new UnsupportedOperationException();
 //		logger.info("Shutting down the JPL prolog engine ...");
 //		boolean result = query(new Atom("halt")).hasSolution(); //WARNING: the Java process would also dye. Commented out until finding another way to halt the JPL logic engine.
