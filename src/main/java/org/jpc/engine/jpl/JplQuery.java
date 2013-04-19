@@ -24,7 +24,11 @@ public class JplQuery extends PrologQuery {
 		jplQuery = new jpl.Query(jplGoal);
 	}
 
-
+	@Override
+	public boolean isAbortable() {
+		return false;
+	}
+	
 	@Override
 	protected void basicAbort() {
 		throw new UnsupportedOperationException();
