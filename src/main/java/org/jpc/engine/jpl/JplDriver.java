@@ -11,7 +11,6 @@ import org.jpc.engine.prolog.PrologEngine;
 import org.jpc.engine.prolog.PrologEngineInitializationException;
 import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
 import org.minitoolbox.CollectionsUtil;
-import org.minitoolbox.Preferences.MissingPropertyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,11 @@ public abstract class JplDriver extends UniquePrologEngineDriver {
 	public static final String JPL_LIBRARY_NAME = "JPL";
 	//public static final String JPLPATH_ENV_VAR = "JPLPATH"; //environment variable with the path to the JPL library. This will determine if the prolog engine is SWI or YAP
 	
-	private static volatile boolean jplSessionStarted = false; //it can be only one (JPL managed) PrologEngine per JVM, then this variable is global
+	/**
+	 * it can be only one (JPL managed) PrologEngine per JVM, then this variable is global
+	 * it does not need to be declared volatile since it is only used by the (already synchronized) public methods isEnabled and createPrologEngine
+	 */
+	private static boolean jplSessionStarted = false; 
 	
 
 	private static Collection<DriverStateListener> stateListeners = CollectionsUtil.createWeakSet();
@@ -45,7 +48,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver {
 	}
 
 	@Override
-	public boolean isInstanceRunning() {
+	protected boolean isInstanceRunning() {
 		return jplSessionStarted;
 	}
 	
