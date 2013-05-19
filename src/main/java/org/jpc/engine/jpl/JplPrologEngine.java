@@ -40,8 +40,8 @@ public class JplPrologEngine extends AbstractPrologEngine {
 	}
 	
 	@Override
-	public Query basicQuery(Term goal, boolean errorHandledQuery, Jpc context) {
-		return new JplQuery(this, goal, errorHandledQuery, context);
+	public Query basicQuery(Term goal, Jpc context) {
+		return new JplQuery(this, goal, context);
 	}
 
 }
