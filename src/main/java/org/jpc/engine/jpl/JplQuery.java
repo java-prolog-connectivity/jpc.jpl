@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 
 import org.jpc.Jpc;
 import org.jpc.query.PrologQuery;
+import org.jpc.query.QuerySolution;
 import org.jpc.term.Term;
 
 /**
@@ -41,7 +42,7 @@ public class JplQuery extends PrologQuery {
 	}
 
 	@Override
-	public Map<String, Term> basicNext() {
+	public QuerySolution basicNext() {
 		if(jplQuery.hasMoreSolutions()) {
 			Map<String, Term> nextSolution = new HashMap<>();
 			Map<String, jpl.Term> jplSolution = jplQuery.nextSolution();
@@ -50,7 +51,7 @@ public class JplQuery extends PrologQuery {
 				Term term = JplBridge.fromJplToJpc(jplEntry.getValue());
 				nextSolution.put(varName, term);
 			}
-			return nextSolution;
+			return new QuerySolution(nextSolution, getPrologEngine(), getJpcContext());
 		} else {
 			throw new NoSuchElementException();
 		}
