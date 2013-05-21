@@ -1,11 +1,10 @@
 package org.jpc.jpl;
 
+import static org.jpc.engine.provider.PrologEngineProviderManager.setPrologEngineProvider;
+
 import org.jpc.engine.jpl.JplSwiDriver;
 import org.jpc.engine.prolog.driver.PrologEngineDriver;
 import org.jpc.engine.provider.SimpleEngineProvider;
-
-import static org.jpc.engine.provider.PrologEngineProviderManager.setPrologEngineProvider;
-
 import org.junit.BeforeClass;
 
 public class JplSwiPrologEngineTestSuite extends JplPrologEngineTestSuite {
@@ -15,3 +14,4 @@ public class JplSwiPrologEngineTestSuite extends JplPrologEngineTestSuite {
 		setPrologEngineProvider(new SimpleEngineProvider(prologEngineConfiguration.createPrologEngine()));
 	}
 }
+

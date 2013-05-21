@@ -2,6 +2,8 @@ package org.jpc.engine.jpl;
 
 import org.jpc.Jpc;
 import org.jpc.engine.prolog.AbstractPrologEngine;
+import org.jpc.error.PrologParsingException;
+import org.jpc.error.SyntaxError;
 import org.jpc.query.Query;
 import org.jpc.term.Term;
 import org.slf4j.Logger;
@@ -34,8 +36,16 @@ public class JplPrologEngine extends AbstractPrologEngine {
 	}
 	
 	@Override
-	public Term asTerm(String termString) {
-		jpl.Term jplTerm = jpl.Util.textToTerm(termString);
+	public Term asTerm(String termString, Jpc context) {
+		jpl.Term jplTerm = null;
+		try {
+			jplTerm = jpl.Util.textToTerm(termString);
+		} catch(jpl.PrologException jplException) {
+			RuntimeException problem = context.fromTerm(JplBridge.fromJplToJpc(jplException.term()));
+			if(problem instanceof SyntaxError)
+				problem = new PrologParsingException(termString, problem);
+			throw problem;
+		}
 		return JplBridge.fromJplToJpc(jplTerm);
 	}
 	
