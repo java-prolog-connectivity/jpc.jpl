@@ -4,12 +4,14 @@ import static org.jpc.engine.provider.PrologEngineProviderManager.setPrologEngin
 
 import org.jpc.engine.jpl.JplSwiDriver;
 import org.jpc.engine.profile.LogtalkEngineProfile;
+import org.jpc.engine.prolog.driver.AbstractPrologEngineDriver;
 import org.jpc.engine.provider.SimpleEngineProvider;
 import org.junit.BeforeClass;
 
 public class JplSwiLogtalkEngineTestSuite extends JplLogtalkEngineTestSuite {
 	@BeforeClass
 	public static void setUp() {
-		setPrologEngineProvider(new SimpleEngineProvider(new LogtalkEngineProfile(new JplSwiDriver()).createPrologEngine()));
+		AbstractPrologEngineDriver prologEngineConfiguration = new JplSwiDriver();
+		setPrologEngineProvider(new SimpleEngineProvider(new LogtalkEngineProfile(prologEngineConfiguration).createPrologEngine()));
 	}
 }

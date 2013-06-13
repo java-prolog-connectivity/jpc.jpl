@@ -23,7 +23,7 @@ public class JplTermReader extends TermReader {
 		read(jplTerm);
 	}
 	
-	public void read(jpl.Term term) {
+	private void read(jpl.Term term) {
 		if(term.isInteger()) {
 			jpl.Integer jplInteger = (jpl.Integer) term;
 			getContentHandler().startIntegerTerm(jplInteger.longValue());

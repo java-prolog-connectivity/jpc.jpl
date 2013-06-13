@@ -1,5 +1,8 @@
 package org.jpc.engine.jpl;
 
+import org.jpc.util.supportedengines.EngineDescription;
+import org.jpc.util.supportedengines.Yap;
+
 
 
 public class JplYapDriver extends JplDriver {
@@ -12,8 +15,8 @@ public class JplYapDriver extends JplDriver {
 	}
 	
 	@Override
-	public String getEngineName() {
-		return YAP;
+	public EngineDescription getEngineDescription() {
+		return new Yap();
 	}
 	
 }

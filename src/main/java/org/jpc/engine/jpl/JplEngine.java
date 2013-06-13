@@ -9,9 +9,9 @@ import org.jpc.term.Term;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JplPrologEngine extends AbstractPrologEngine {
+public class JplEngine extends AbstractPrologEngine {
 
-	private static Logger logger = LoggerFactory.getLogger(JplPrologEngine.class);
+	private static Logger logger = LoggerFactory.getLogger(JplEngine.class);
 
 	@Override
 	public void close() {

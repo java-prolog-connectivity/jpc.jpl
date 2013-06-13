@@ -34,7 +34,7 @@ public class JplQuery extends PrologQuery {
 	 */
 	private ExecutorService executor;
 	
-	public JplQuery(JplPrologEngine prologEngine, Term goal, Jpc context) {
+	public JplQuery(JplEngine prologEngine, Term goal, Jpc context) {
 		super(prologEngine, goal, context);
 		jpl.Term jplGoal = JplBridge.fromJpcToJpl(getInstrumentedGoal());
 		jplQuery = new jpl.Query(jplGoal);

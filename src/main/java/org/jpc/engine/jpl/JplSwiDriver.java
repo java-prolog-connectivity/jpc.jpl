@@ -1,9 +1,9 @@
 package org.jpc.engine.jpl;
 
-
+import org.jpc.util.supportedengines.EngineDescription;
+import org.jpc.util.supportedengines.Swi;
 
 public class JplSwiDriver extends JplDriver {
-	public static final String SWI = "SWI";
 	public static final String JPLPATH_SWI_ENV_VAR = "JPLPATH_SWI"; 
 	
 	@Override
@@ -12,8 +12,8 @@ public class JplSwiDriver extends JplDriver {
 	}
 	
 	@Override
-	public String getEngineName() {
-		return SWI;
+	public EngineDescription getEngineDescription() {
+		return new Swi();
 	}
 
 }

@@ -80,7 +80,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver {
 
 	@Override
 	protected PrologEngine basicCreatePrologEngine() {
-		PrologEngine prologEngine = new JplPrologEngine();
+		PrologEngine prologEngine = new JplEngine();
 		jplSessionStarted = true;
 		return prologEngine;
 	}
