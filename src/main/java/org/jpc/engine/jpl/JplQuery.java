@@ -7,10 +7,11 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import org.jpc.Jpc;
 import org.jpc.query.PrologQuery;
-import org.jpc.query.QuerySolution;
+import org.jpc.query.Solution;
 import org.jpc.term.Term;
 
 /**
@@ -42,7 +43,15 @@ public class JplQuery extends PrologQuery {
 
 	private ExecutorService getExecutor() {
 		if(executor == null)
-			executor = Executors.newSingleThreadExecutor();
+			executor = Executors.newSingleThreadExecutor(new ThreadFactory() {
+				@Override
+				public Thread newThread(Runnable r) {
+					Thread t = new Thread(r, "JPL thread");
+					t.setDaemon(true);
+					return t;
+				}
+				
+			});
 		return executor;
 	}
 	
@@ -76,25 +85,14 @@ public class JplQuery extends PrologQuery {
 	}
 
 	@Override
-	public QuerySolution basicNext() {
+	public Solution basicNext() {
+		Solution querySolution = null;
 		executor = getExecutor();
-		QuerySolution querySolution = null;
 		try {
-			querySolution = executor.submit(new Callable<QuerySolution>() {
+			querySolution = executor.submit(new Callable<Solution>() {
 				@Override
-				public QuerySolution call() throws Exception {
-					if(jplQuery.hasMoreSolutions()) {
-						Map<String, Term> nextSolution = new HashMap<>();
-						Map<String, jpl.Term> jplSolution = jplQuery.nextSolution();
-						for(Entry<String, jpl.Term> jplEntry : jplSolution.entrySet()) {
-							String varName = jplEntry.getKey();
-							Term term = JplBridge.fromJplToJpc(jplEntry.getValue());
-							nextSolution.put(varName, term);
-						}
-						return new QuerySolution(nextSolution, getPrologEngine(), getJpcContext());
-					} else {
-						return null;
-					}
+				public Solution call() throws Exception {
+					return currentThreadBasicNext();
 				}
 			}).get();
 		} catch (Exception e) {
@@ -106,4 +104,19 @@ public class JplQuery extends PrologQuery {
 			throw new NoSuchElementException();
 	}
 
+	private Solution currentThreadBasicNext() {
+		if(jplQuery.hasMoreSolutions()) {
+			Map<String, Term> nextSolution = new HashMap<>();
+			Map<String, jpl.Term> jplSolution = jplQuery.nextSolution();
+			for(Entry<String, jpl.Term> jplEntry : jplSolution.entrySet()) {
+				String varName = jplEntry.getKey();
+				Term term = JplBridge.fromJplToJpc(jplEntry.getValue());
+				nextSolution.put(varName, term);
+			}
+			return new Solution(nextSolution, getPrologEngine(), getJpcContext());
+		} else {
+			return null;
+		}
+	}
+	
 }
