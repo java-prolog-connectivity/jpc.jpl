@@ -21,6 +21,7 @@ import org.jpc.term.Term;
  */
 public class JplQuery extends PrologQuery {
 
+	private jpl.Term jplGoal;
 	private jpl.Query jplQuery;
 	/**
 	 * At the moment, JPL requires that calls to hasMoreSolutions() and nextSolution() occur in the same thread.
@@ -37,8 +38,7 @@ public class JplQuery extends PrologQuery {
 	
 	public JplQuery(JplEngine prologEngine, Term goal, boolean errorHandledQuery, Jpc context) {
 		super(prologEngine, goal, errorHandledQuery, context);
-		jpl.Term jplGoal = JplBridge.fromJpcToJpl(getInstrumentedGoal());
-		jplQuery = new jpl.Query(jplGoal);
+		jplGoal = JplBridge.fromJpcToJpl(getInstrumentedGoal());
 	}
 
 	private ExecutorService getExecutor() {
@@ -50,11 +50,10 @@ public class JplQuery extends PrologQuery {
 					t.setDaemon(true);
 					return t;
 				}
-				
 			});
 		return executor;
 	}
-	
+
 	@Override
 	public boolean isAbortable() {
 		return false;
@@ -66,15 +65,16 @@ public class JplQuery extends PrologQuery {
 		//jplQuery.abort(); //this method exists but does not work
 	}
 
+	
 	@Override
 	protected void basicClose() {
 		executor = getExecutor();
 		try {
-			executor.submit(new Callable<Object>() {
+			executor.submit(new Runnable() {
 				@Override
-				public Object call() throws Exception {
-					jplQuery.close();
-					return null;
+				public void run() {
+					if(jplQuery != null)
+						jplQuery.close();
 				}
 			}).get();
 			executor.shutdownNow();
@@ -92,7 +92,14 @@ public class JplQuery extends PrologQuery {
 			querySolution = executor.submit(new Callable<Solution>() {
 				@Override
 				public Solution call() throws Exception {
-					return currentThreadBasicNext();
+					Solution solution = null;
+					try {
+						solution = currentThreadBasicNext();
+					} catch(Exception e) {
+						jplQuery = null;
+						throw e;
+					}
+					return solution;
 				}
 			}).get();
 		} catch (Exception e) {
@@ -105,6 +112,9 @@ public class JplQuery extends PrologQuery {
 	}
 
 	private Solution currentThreadBasicNext() {
+		if(jplQuery == null) {
+			jplQuery = new jpl.Query(jplGoal);
+		}
 		if(jplQuery.hasMoreSolutions()) {
 			Map<String, Term> nextSolution = new HashMap<>();
 			Map<String, jpl.Term> jplSolution = jplQuery.nextSolution();
