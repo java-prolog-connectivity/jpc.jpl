@@ -12,6 +12,6 @@ public class JplSwiPrologEngineTestSuite extends JplPrologEngineTestSuite {
 	public static void setUp() {
 		AbstractPrologEngineDriver prologEngineConfiguration = new JplSwiDriver();
 		setPrologEngineProvider(new SimpleEngineProvider(prologEngineConfiguration.createPrologEngine()));
+		
 	}
 }
-

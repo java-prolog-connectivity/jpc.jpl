@@ -5,11 +5,11 @@ import java.util.Collection;
 
 import jpl.JPL;
 
-import org.jpc.JpcPreferences;
 import org.jpc.engine.listener.DriverStateListener;
 import org.jpc.engine.prolog.PrologEngine;
 import org.jpc.engine.prolog.PrologEngineInitializationException;
 import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
+import org.jpc.util.JpcPreferences;
 import org.minitoolbox.collections.CollectionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
