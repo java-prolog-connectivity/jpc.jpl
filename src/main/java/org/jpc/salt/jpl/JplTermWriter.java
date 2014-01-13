@@ -1,7 +1,7 @@
 package org.jpc.salt.jpl;
 
-import org.jpc.salt.TermContentHandler;
 import org.jpc.salt.TermBuilder;
+import org.jpc.salt.TermContentHandler;
 import org.jpc.salt.TermWriter;
 
 public class JplTermWriter extends TermWriter<jpl.Term> {
@@ -30,6 +30,11 @@ public class JplTermWriter extends TermWriter<jpl.Term> {
 		return this;
 	}
 
+	@Override
+	public TermContentHandler startJRef(Object ref) {
+		throw new UnsupportedOperationException(); //underlying Prolog engine does not support (non-symbolic) Java references.
+	}
+	
 	protected TermBuilder<jpl.Term> createCompoundBuilder() {
 		return new JplTermBuilder();
 	}
