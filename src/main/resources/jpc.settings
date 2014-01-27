@@ -1,0 +1,22 @@
+{
+engines: [
+  {
+    alias: "swi",
+    factory: "org.jpc.engine.jpl.JplSwiDriver"
+  },
+  {
+    alias: "swi_logtalk",
+    factory: "org.jpc.engine.jpl.JplSwiDriver",
+    profile: "org.jpc.engine.profile.LogtalkEngineProfile"
+  },
+  {
+    alias: "yap",
+    factory: "org.jpc.engine.jpl.JplYapDriver"
+  },
+  {
+    alias: "yap_logtalk",
+    factory: "org.jpc.engine.jpl.JplYapDriver",
+    profile: "org.jpc.engine.profile.LogtalkEngineProfile"
+  }
+]
+}
