@@ -32,7 +32,17 @@ public class JplTermWriter extends TermWriter<jpl.Term> {
 
 	@Override
 	public TermContentHandler startJRef(Object ref) {
-		throw new UnsupportedOperationException(); //underlying Prolog engine does not support (non-symbolic) Java references.
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public TermContentHandler startSoftJRef(Object ref) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public TermContentHandler startWeakJRef(Object ref) {
+		throw new UnsupportedOperationException();
 	}
 	
 	protected TermBuilder<jpl.Term> createCompoundBuilder() {
