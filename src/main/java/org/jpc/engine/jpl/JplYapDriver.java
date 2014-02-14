@@ -1,7 +1,7 @@
 package org.jpc.engine.jpl;
 
-import org.jpc.util.supportedengines.EngineDescription;
-import org.jpc.util.supportedengines.Yap;
+import org.jpc.util.engine.supported.EngineDescription;
+import org.jpc.util.engine.supported.Yap;
 
 
 

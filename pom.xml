@@ -36,20 +36,15 @@
     </developers>
 
 	<dependencies>
-		<dependency>
+
+ 		 <dependency>
 			<groupId>com.github.java-prolog-connectivity</groupId>
 			<artifactId>jpc</artifactId>
 			<version>0.0.1-alpha-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.github.java-prolog-connectivity</groupId>
-			<artifactId>jpc-engine-test</artifactId>
-			<version>0.0.1-alpha-SNAPSHOT</version>
-			<type>test-jar</type>
-      		<scope>test</scope>
-		</dependency>
-		 
+			 <type>test-jar</type>
+			<scope>test</scope>
+		</dependency> 
+		
 		<dependency>
 			<groupId>com.github.java-prolog-connectivity</groupId>
 			<artifactId>jpc-examples</artifactId>

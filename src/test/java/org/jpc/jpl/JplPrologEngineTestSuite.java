@@ -1,6 +1,6 @@
 package org.jpc.jpl;
 
-import org.jpc.PrologEngineTestSuite;
+import org.jpc.engine.prolog.PrologEngineTestSuite;
 import org.jpc.examples.PrologExamplesTestSuite;
 import org.jpc.salt.jpl.JplTransformationTest;
 import org.junit.runner.RunWith;
