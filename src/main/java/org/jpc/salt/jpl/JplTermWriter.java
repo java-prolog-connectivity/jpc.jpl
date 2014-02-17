@@ -34,17 +34,7 @@ public class JplTermWriter extends TermWriter<jpl.Term> {
 	public TermContentHandler startJRef(Object ref) {
 		throw new UnsupportedOperationException();
 	}
-	
-	@Override
-	public TermContentHandler startSoftJRef(Object ref) {
-		throw new UnsupportedOperationException();
-	}
-	
-	@Override
-	public TermContentHandler startWeakJRef(Object ref) {
-		throw new UnsupportedOperationException();
-	}
-	
+
 	protected TermBuilder<jpl.Term> createCompoundBuilder() {
 		return new JplTermBuilder();
 	}
