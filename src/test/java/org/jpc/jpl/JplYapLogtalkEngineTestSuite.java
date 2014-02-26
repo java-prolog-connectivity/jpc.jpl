@@ -9,6 +9,8 @@ import org.junit.BeforeClass;
 public class JplYapLogtalkEngineTestSuite extends JplLogtalkEngineTestSuite {
 	@BeforeClass
 	public static void setUp() {
-		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().forAlias("yap_logtalk")));
+		EngineConfigurationManager engineConfigurationManager = EngineConfigurationManager.createFromFile("jpc_yap_logtalk.settings");
+		EngineConfigurationManager.setDefault(engineConfigurationManager);
+		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().getNamedPrologEngine("yap_logtalk")));
 	}
 }

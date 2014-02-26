@@ -9,7 +9,9 @@ import org.junit.BeforeClass;
 public class JplYapPrologEngineTestSuite extends JplPrologEngineTestSuite {
 	@BeforeClass
 	public static void setUp() {
-		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().forAlias("yap")));
+		EngineConfigurationManager engineConfigurationManager = EngineConfigurationManager.createFromFile("jpc_yap.settings");
+		EngineConfigurationManager.setDefault(engineConfigurationManager);
+		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().getNamedPrologEngine("yap")));
 	}
 
 }

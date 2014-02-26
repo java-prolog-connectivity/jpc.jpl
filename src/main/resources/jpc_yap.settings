@@ -1,0 +1,9 @@
+{
+engines: [
+  {
+    name: "yap",
+    packageNames: [""],
+    factory: "org.jpc.engine.jpl.JplYapDriver"
+  }
+]
+}

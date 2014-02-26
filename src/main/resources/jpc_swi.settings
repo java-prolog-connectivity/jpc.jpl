@@ -1,0 +1,9 @@
+{
+engines: [
+  {
+    name: "swi",
+    packageNames: [""],
+    factory: "org.jpc.engine.jpl.JplSwiDriver"
+  }
+]
+}

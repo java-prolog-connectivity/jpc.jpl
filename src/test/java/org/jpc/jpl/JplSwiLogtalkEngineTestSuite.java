@@ -9,6 +9,8 @@ import org.junit.BeforeClass;
 public class JplSwiLogtalkEngineTestSuite extends JplLogtalkEngineTestSuite {
 	@BeforeClass
 	public static void setUp() {
-		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().forAlias("swi_logtalk")));
+		EngineConfigurationManager engineConfigurationManager = EngineConfigurationManager.createFromFile("jpc_swi_logtalk.settings");
+		EngineConfigurationManager.setDefault(engineConfigurationManager);
+		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().getNamedPrologEngine("swi_logtalk")));
 	}
 }

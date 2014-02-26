@@ -1,0 +1,10 @@
+{
+engines: [
+  {
+    name: "swi_logtalk",
+    packageNames: [""],
+    factory: "org.jpc.engine.jpl.JplSwiDriver",
+    profile: "org.jpc.engine.profile.LogtalkEngineProfile"
+  }
+]
+}

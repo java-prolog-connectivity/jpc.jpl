@@ -9,6 +9,8 @@ import org.junit.BeforeClass;
 public class JplSwiPrologEngineTestSuite extends JplPrologEngineTestSuite {
 	@BeforeClass
 	public static void setUp() {
-		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().forAlias("swi")));
+		EngineConfigurationManager engineConfigurationManager = EngineConfigurationManager.createFromFile("jpc_swi.settings");
+		EngineConfigurationManager.setDefault(engineConfigurationManager);
+		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().getNamedPrologEngine("swi")));
 	}
 }
