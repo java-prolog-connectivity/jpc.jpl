@@ -2,7 +2,7 @@
 engines: [
   {
     id: "swi_logtalk",
-    packageNames: [""],
+    categoryNames: [""],
     factory: "org.jpc.engine.jpl.JplSwiDriver",
     profile: "org.jpc.engine.profile.LogtalkEngineProfile"
   }

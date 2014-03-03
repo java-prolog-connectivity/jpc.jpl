@@ -2,7 +2,7 @@
 engines: [
   {
     id: "yap",
-    packageNames: [""],
+    categoryNames: [""],
     factory: "org.jpc.engine.jpl.JplYapDriver"
   }
 ]

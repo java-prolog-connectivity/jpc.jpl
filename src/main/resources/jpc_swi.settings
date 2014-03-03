@@ -2,7 +2,7 @@
 engines: [
   {
     id: "swi",
-    packageNames: [""],
+    categoryNames: [""],
     factory: "org.jpc.engine.jpl.JplSwiDriver"
   }
 ]
