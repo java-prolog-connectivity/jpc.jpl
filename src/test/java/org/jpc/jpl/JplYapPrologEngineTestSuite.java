@@ -11,7 +11,7 @@ public class JplYapPrologEngineTestSuite extends JplPrologEngineTestSuite {
 	public static void setUp() {
 		EngineConfigurationManager engineConfigurationManager = EngineConfigurationManager.createFromFile("jpc_yap.settings");
 		EngineConfigurationManager.setDefault(engineConfigurationManager);
-		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().getNamedPrologEngine("yap")));
+		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().getPrologEngineById("yap")));
 	}
 
 }

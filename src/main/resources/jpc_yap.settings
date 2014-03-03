@@ -1,7 +1,7 @@
 {
 engines: [
   {
-    name: "yap",
+    id: "yap",
     packageNames: [""],
     factory: "org.jpc.engine.jpl.JplYapDriver"
   }

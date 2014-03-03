@@ -11,6 +11,6 @@ public class JplSwiLogtalkEngineTestSuite extends JplLogtalkEngineTestSuite {
 	public static void setUp() {
 		EngineConfigurationManager engineConfigurationManager = EngineConfigurationManager.createFromFile("jpc_swi_logtalk.settings");
 		EngineConfigurationManager.setDefault(engineConfigurationManager);
-		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().getNamedPrologEngine("swi_logtalk")));
+		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().getPrologEngineById("swi_logtalk")));
 	}
 }

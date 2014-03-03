@@ -11,6 +11,6 @@ public class JplYapLogtalkEngineTestSuite extends JplLogtalkEngineTestSuite {
 	public static void setUp() {
 		EngineConfigurationManager engineConfigurationManager = EngineConfigurationManager.createFromFile("jpc_yap_logtalk.settings");
 		EngineConfigurationManager.setDefault(engineConfigurationManager);
-		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().getNamedPrologEngine("yap_logtalk")));
+		setPrologEngineProvider(new SimpleEngineProvider(EngineConfigurationManager.getDefault().getPrologEngineById("yap_logtalk")));
 	}
 }
