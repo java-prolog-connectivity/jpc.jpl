@@ -1,10 +1,10 @@
 {
 engines: [
   {
-    id: "swi_logtalk",
-    categoryNames: [""],
-    factory: "org.jpc.engine.jpl.JplSwiDriver",
-    profile: "org.jpc.engine.profile.LogtalkEngineProfile"
+    "id": "swi_logtalk",
+    "categoryNames": [""],
+    "factory": "org.jpc.engine.jpl.JplSwiDriver",
+    "profile": "org.jpc.engine.profile.LogtalkEngineProfile"
   }
 ]
 }

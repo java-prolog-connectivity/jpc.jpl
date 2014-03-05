@@ -1,9 +1,9 @@
 {
 engines: [
   {
-    id: "yap",
-    categoryNames: [""],
-    factory: "org.jpc.engine.jpl.JplYapDriver"
+    "id": "yap",
+    "categoryNames": [""],
+    "factory": "org.jpc.engine.jpl.JplYapDriver"
   }
 ]
 }

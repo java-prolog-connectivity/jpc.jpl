@@ -1,10 +1,10 @@
 {
 engines: [
   {
-    id: "yap_logtalk",
-    categoryNames: [""],
-    factory: "org.jpc.engine.jpl.JplYapDriver",
-    profile: "org.jpc.engine.profile.LogtalkEngineProfile"
+    "id": "yap_logtalk",
+    "categoryNames": [""],
+    "factory": "org.jpc.engine.jpl.JplYapDriver",
+    "profile": "org.jpc.engine.profile.LogtalkEngineProfile"
   }
 ]
 }

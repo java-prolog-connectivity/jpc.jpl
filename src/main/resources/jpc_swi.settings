@@ -1,9 +1,9 @@
 {
 engines: [
   {
-    id: "swi",
-    categoryNames: [""],
-    factory: "org.jpc.engine.jpl.JplSwiDriver"
+    "id": "swi",
+    "categoryNames": [""],
+    "factory": "org.jpc.engine.jpl.JplSwiDriver"
   }
 ]
 }
