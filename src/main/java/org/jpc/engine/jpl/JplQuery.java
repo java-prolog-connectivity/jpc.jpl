@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -102,16 +103,14 @@ public class JplQuery extends PrologQuery {
 					return solution;
 				}
 			}).get();
-		} catch (Exception e) {
+		} catch (InterruptedException | ExecutionException e) {
 			throw new RuntimeException(e);
 		}
-		if(querySolution!=null)
-			return querySolution;
-		else
-			throw new NoSuchElementException();
+		return querySolution;
 	}
 
 	private Solution currentThreadBasicNext() {
+		Solution querySolution = null;
 		if(jplQuery == null) {
 			jplQuery = new jpl.Query(jplGoal);
 		}
@@ -123,10 +122,12 @@ public class JplQuery extends PrologQuery {
 				Term term = JplBridge.fromJplToJpc(jplEntry.getValue());
 				nextSolution.put(varName, term);
 			}
-			return new Solution(nextSolution, getPrologEngine(), getJpcContext());
-		} else {
-			return null;
-		}
+			querySolution = new Solution(nextSolution, getPrologEngine(), getJpcContext());
+		} 
+		if(querySolution!=null)
+			return querySolution;
+		else
+			throw new NoSuchElementException();
 	}
 	
 }

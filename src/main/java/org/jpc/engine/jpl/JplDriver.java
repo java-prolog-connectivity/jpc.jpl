@@ -6,15 +6,15 @@ import java.util.Collection;
 import jpl.JPL;
 
 import org.jpc.engine.listener.DriverStateListener;
-import org.jpc.engine.prolog.PrologEngine;
 import org.jpc.engine.prolog.PrologEngineInitializationException;
 import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
 import org.jpc.util.JpcPreferences;
+import org.jpc.util.engine.supported.EngineDescription;
 import org.minitoolbox.collections.CollectionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class JplDriver extends UniquePrologEngineDriver {
+public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 
 	private static Logger logger = LoggerFactory.getLogger(JplDriver.class);
 	public static final String JPL_LIBRARY_NAME = "JPL";
@@ -25,18 +25,15 @@ public abstract class JplDriver extends UniquePrologEngineDriver {
 	 * it does not need to be declared volatile since it is only used by the (already synchronized) public methods isEnabled and createPrologEngine
 	 */
 	private static boolean jplSessionStarted = false; 
-	
 
-	private static Collection<DriverStateListener> stateListeners = CollectionsUtil.createWeakSet();
+	private static final Collection<DriverStateListener> stateListeners = CollectionsUtil.createWeakSet();
 	
 	private String jplPath;
-
-	public JplDriver() {
-		super();
-	}
+	private final String jplPathPropertyVar;
 	
-	public JplDriver(JpcPreferences preferences) {
-		super(preferences);
+	public JplDriver(EngineDescription engineDescription, String jplPathPropertyVar, JpcPreferences preferences) {
+		super(engineDescription, preferences);
+		this.jplPathPropertyVar = jplPathPropertyVar;
 	}
 	
 	public String getJplPath() {
@@ -73,14 +70,13 @@ public abstract class JplDriver extends UniquePrologEngineDriver {
 		return getPreferences().getVar(getJplPathPropertyVar());
 	}
 	
-	public abstract String getJplPathPropertyVar();
-//	public String getJplPathPropertyVar() {
-//		return JPLPATH_ENV_VAR;
-//	}
+	public String getJplPathPropertyVar() {
+		return jplPathPropertyVar;
+	}
 
 	@Override
-	protected PrologEngine basicCreatePrologEngine() {
-		PrologEngine prologEngine = new JplEngine();
+	protected JplEngine basicCreatePrologEngine() {
+		JplEngine prologEngine = new JplEngine();
 		jplSessionStarted = true;
 		return prologEngine;
 	}

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class JplEngine extends AbstractPrologEngine {
 
-	private static Logger logger = LoggerFactory.getLogger(JplEngine.class);
+	private static final Logger logger = LoggerFactory.getLogger(JplEngine.class);
 
 	@Override
 	public void close() {
