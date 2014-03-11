@@ -1,7 +1,6 @@
 package org.jpc.engine.jpl;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -41,16 +40,6 @@ public class SingleThreadedJplQuery extends PrologQuery {
         throw new UnsupportedOperationException();
         //jplQuery.abort(); //this method exists but does not work
     }
- 
-	@Override
-	protected Solution basicOneSolutionOrThrow() {
-		return super.basicOneSolutionOrThrow();
-	}
-	
-	@Override
-	protected List<Solution> basicAllSolutions() {
-		return super.basicAllSolutions();
-	}
 	
     @Override
     protected void basicClose() {
