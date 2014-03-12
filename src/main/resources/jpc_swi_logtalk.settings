@@ -3,8 +3,8 @@ engines: [
   {
     "id": "swi_logtalk",
     "categoryNames": [""],
-    "factory": "org.jpc.engine.jpl.JplSwiDriver",
-    "profile": "org.jpc.engine.profile.LogtalkEngineProfile"
+    "factoryClass": "org.jpc.engine.jpl.JplSwiDriver",
+    "profileClass": "org.jpc.engine.profile.LogtalkEngineProfile"
   }
 ]
 }

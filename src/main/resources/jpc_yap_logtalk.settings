@@ -3,8 +3,8 @@ engines: [
   {
     "id": "yap_logtalk",
     "categoryNames": [""],
-    "factory": "org.jpc.engine.jpl.JplYapDriver",
-    "profile": "org.jpc.engine.profile.LogtalkEngineProfile"
+    "factoryClass": "org.jpc.engine.jpl.JplYapDriver",
+    "profileClass": "org.jpc.engine.profile.LogtalkEngineProfile"
   }
 ]
 }

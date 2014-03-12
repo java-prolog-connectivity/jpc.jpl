@@ -3,7 +3,7 @@ engines: [
   {
     "id": "swi",
     "categoryNames": [""],
-    "factory": "org.jpc.engine.jpl.JplSwiDriver"
+    "factoryClass": "org.jpc.engine.jpl.JplSwiDriver"
   }
 ]
 }
