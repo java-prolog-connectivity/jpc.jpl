@@ -1,7 +1,10 @@
 package org.jpc.engine.jpl;
 
+import static org.jpc.engine.prolog.ThreadModel.SINGLE_THREADED;
+
 import org.jpc.Jpc;
 import org.jpc.engine.prolog.AbstractPrologEngine;
+import org.jpc.engine.prolog.ThreadModel;
 import org.jpc.error.PrologParsingException;
 import org.jpc.error.SyntaxError;
 import org.jpc.query.Query;
@@ -13,6 +16,12 @@ public class JplEngine extends AbstractPrologEngine {
 
 	private static final Logger logger = LoggerFactory.getLogger(JplEngine.class);
 
+	private final ThreadModel threadModel; 
+	
+	JplEngine(ThreadModel threadModel) {
+		this.threadModel = threadModel;
+	}
+	
 	@Override
 	public void close() {
 		throw new UnsupportedOperationException();
@@ -31,8 +40,8 @@ public class JplEngine extends AbstractPrologEngine {
 	}
 	
 	@Override
-	public boolean isMultiThreaded() {
-		return true;
+	public ThreadModel threadModel() {
+		return threadModel;
 	}
 	
 	@Override
@@ -51,8 +60,10 @@ public class JplEngine extends AbstractPrologEngine {
 	
 	@Override
 	public Query basicQuery(Term goal, boolean errorHandledQuery, Jpc context) {
-		//return new MultiThreadedJplQuery(this, goal, errorHandledQuery, context);
-		return new SingleThreadedJplQuery(this, goal, errorHandledQuery, context);
+		if(threadModel.equals(SINGLE_THREADED))
+			return new SingleThreadedJplQuery(this, goal, errorHandledQuery, context);
+		else
+			return new MultiThreadedJplQuery(this, goal, errorHandledQuery, context);
 	}
 
 }

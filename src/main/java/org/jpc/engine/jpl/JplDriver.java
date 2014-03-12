@@ -1,5 +1,8 @@
 package org.jpc.engine.jpl;
 
+import static org.jpc.engine.prolog.ThreadModel.MULTI_THREADED;
+import static org.jpc.engine.prolog.ThreadModel.SINGLE_THREADED;
+
 import java.io.File;
 import java.util.Collection;
 
@@ -7,6 +10,7 @@ import jpl.JPL;
 
 import org.jpc.engine.listener.DriverStateListener;
 import org.jpc.engine.prolog.PrologEngineInitializationException;
+import org.jpc.engine.prolog.driver.PrologEngineFactory;
 import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
 import org.jpc.util.JpcPreferences;
 import org.jpc.util.engine.supported.EngineDescription;
@@ -74,11 +78,34 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 		return jplPathPropertyVar;
 	}
 
+	/**
+	 * 
+	 * @return a JPL Prolog engine with multi-threading support.
+	 */
+	public JplEngine createMTPrologEngine() {
+		return createPrologEngine(new PrologEngineFactory<JplEngine>() {
+			@Override
+			public JplEngine createPrologEngine() {
+				return new JplEngine(MULTI_THREADED);
+			}
+		});
+	}
+	
 	@Override
-	protected JplEngine basicCreatePrologEngine() {
-		JplEngine prologEngine = new JplEngine();
+	protected synchronized JplEngine createPrologEngine(PrologEngineFactory<JplEngine> basicFactory) {
+		JplEngine prologEngine = super.createPrologEngine(basicFactory);
 		jplSessionStarted = true;
 		return prologEngine;
+	}
+	
+	@Override
+	protected PrologEngineFactory<JplEngine> defaultBasicFactory() {
+		return new PrologEngineFactory<JplEngine>() {
+			@Override
+			public JplEngine createPrologEngine() {
+				return new JplEngine(SINGLE_THREADED);
+			}
+		};
 	}
 	
 	@Override
