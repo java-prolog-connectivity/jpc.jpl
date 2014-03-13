@@ -41,10 +41,15 @@ public class SingleThreadedJplQuery extends PrologQuery {
         //jplQuery.abort(); //this method exists but does not work
     }
 	
+    void resetJplQuery() {
+    	jplQuery = null;
+    }
+    
     @Override
     protected void basicClose() {
-    	if(jplQuery != null)
-            jplQuery.close();
+    	if(jplQuery != null) {
+    		jplQuery.close();
+    	}
     }
  
     @Override

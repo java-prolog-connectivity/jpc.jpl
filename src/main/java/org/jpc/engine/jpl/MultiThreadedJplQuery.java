@@ -46,6 +46,16 @@ public class MultiThreadedJplQuery extends QueryAdapter {
         return executor;
     }
 
+    /**
+     * Releases the executor.
+     * The current version just shut it down. A more advanced implementation should use an executor pool.
+     */
+    private void releaseExecutor() {
+    	executor.shutdownNow();
+        executor = null;
+    }
+    
+    
     @Override
     protected void basicClose() {
         executor = getExecutor();
@@ -53,7 +63,12 @@ public class MultiThreadedJplQuery extends QueryAdapter {
         	executor.submit(new Runnable() {
 			    @Override
 			    public void run() {
-			    	((SingleThreadedJplQuery)query).close();
+			    	SingleThreadedJplQuery stQuery = (SingleThreadedJplQuery)query;
+			    	try {
+			    		stQuery.close();
+			    	} finally {
+			    		stQuery.resetJplQuery();
+			    	}
 			    }
 			}).get();
         } catch (ExecutionException e) {
@@ -65,8 +80,7 @@ public class MultiThreadedJplQuery extends QueryAdapter {
         } catch(InterruptedException e) {
         	throw new RuntimeException(e);
         } finally {
-        	executor.shutdownNow();
-            executor = null;
+        	releaseExecutor();
         }
     }
  
@@ -77,15 +91,23 @@ public class MultiThreadedJplQuery extends QueryAdapter {
             return executor.submit(new Callable<Solution>() {
                 @Override
                 public Solution call() throws Exception {
-                    return ((SingleThreadedJplQuery)query).next();
+                	SingleThreadedJplQuery stQuery = (SingleThreadedJplQuery)query;
+                	try {
+                        return stQuery.next();
+                	} catch(Exception e) {
+                		stQuery.resetJplQuery();
+                		throw e;
+                	}
                 }
             }).get();
         } catch (ExecutionException e) {
+        	releaseExecutor();
         	Throwable cause = e.getCause();
-        	if(cause instanceof RuntimeException)
+        	if(cause instanceof RuntimeException) {
         		throw (RuntimeException)cause;
-        	else
+        	} else {
         		throw new RuntimeException(cause);
+        	}
         } catch(InterruptedException e) {
         	throw new RuntimeException(e);
         }
