@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 
-	private static Logger logger = LoggerFactory.getLogger(JplDriver.class);
+	private static final Logger logger = LoggerFactory.getLogger(JplDriver.class);
 	public static final String JPL_LIBRARY_NAME = "JPL";
 	//public static final String JPLPATH_ENV_VAR = "JPLPATH"; //environment variable with the path to the JPL library. This will determine if the prolog engine is SWI or YAP
 	
