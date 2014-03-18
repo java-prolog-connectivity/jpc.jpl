@@ -9,6 +9,10 @@ public class JplYapDriver extends JplDriver {
 	
 	public static final String JPLPATH_YAP_ENV_VAR = "JPLPATH_YAP";
 	
+	public static void configure() {
+		new JplYapDriver().readyOrThrow();
+	}
+	
 	public JplYapDriver() {
 		super(new Yap(), JPLPATH_YAP_ENV_VAR, new JpcPreferences());
 	}
