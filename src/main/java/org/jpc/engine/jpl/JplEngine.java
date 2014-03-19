@@ -9,13 +9,16 @@ import org.jpc.error.PrologParsingException;
 import org.jpc.error.SyntaxError;
 import org.jpc.query.Query;
 import org.jpc.term.Term;
+import org.jpc.util.JpcPreferences;
+import org.jpc.util.engine.PrologResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JplEngine extends AbstractPrologEngine {
 
 	private static final Logger logger = LoggerFactory.getLogger(JplEngine.class);
-
+	public static final String JPL_LOGTALK_LOADER_FILE = JpcPreferences.JPC_PROLOG_RESOURCES + "jpl_logtalk.lgt";
+	
 	private final ThreadModel threadModel; 
 	
 	JplEngine(ThreadModel threadModel) {
@@ -66,4 +69,11 @@ public class JplEngine extends AbstractPrologEngine {
 			return new MultiThreadedJplQuery(this, goal, errorHandledQuery, context);
 	}
 
+	@Override
+	protected void loadJpcLogtalkFiles() {
+		super.loadJpcLogtalkFiles(); //load default JPC Logtalk files.
+		PrologResourceLoader resourceLoader = new PrologResourceLoader(this);
+		resourceLoader.logtalkLoad(JPL_LOGTALK_LOADER_FILE); //load Logtalk JPL specific Logtalk files.
+	}
+	
 }
