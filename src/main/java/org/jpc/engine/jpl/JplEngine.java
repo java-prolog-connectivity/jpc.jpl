@@ -17,7 +17,9 @@ import org.slf4j.LoggerFactory;
 public class JplEngine extends AbstractPrologEngine {
 
 	private static final Logger logger = LoggerFactory.getLogger(JplEngine.class);
-	public static final String JPL_LOGTALK_LOADER_FILE = JpcPreferences.JPC_PROLOG_RESOURCES + "jpl_logtalk.lgt";
+	
+	public static final String JPL_PROLOG_RESOURCES = JpcPreferences.JPC_PROLOG_RESOURCES + "jpl/";
+	public static final String JPL_LOGTALK_LOADER_FILE = JPL_PROLOG_RESOURCES + "load_all.lgt";
 	
 	private final ThreadModel threadModel; 
 	
