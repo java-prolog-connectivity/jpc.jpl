@@ -1,5 +1,6 @@
 package org.jpc.engine.jpl;
  
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -12,14 +13,16 @@ import org.jpc.query.Solution;
 import org.jpc.term.Term;
  
 /**
- * An adapter to a JPL query
+ * This class wraps a JPL query in such a way that it does not have the JPL limitations regarding multithreading support.
  * @author sergioc
  *
  */
+//IMPLEMENTATION NOTES: This is still experimental. It crashes from time to time. Horribly difficult to debug.
+//The class basically overrides all the public methods in the ancestor classes and executes them (with a super call) in the context of an executor service (into another thread).
+//It is important that the overridden methods in this class are not synchronized, otherwise it will create a deadlock when executing the super (typically synchronized) methods.
 public class MultiThreadedJplQuery extends QueryAdapter {
  
     /**
-     * This class wraps a JPL query in such a way that it does not have the JPL limitations regarding multithreading support.
      * The executor below allows to provide a JPC query (encapsulating a JPL query) that does not have the constraint limiting certain cursor operations to happen in the same thread (as in JPL).
      * This is done executing relevant JPL operations in the context of a single threaded executor (an executor backed up with only one thread).
      * Although we gain on simplifying the usage contract of JPL Query objects (specially in heavy multi-threaded scenarios), 
@@ -28,7 +31,7 @@ public class MultiThreadedJplQuery extends QueryAdapter {
      * This implementation should be modified (i.e., the executor removed) if JPL eventually removes existing constraints regarding cursor operations occurring in the same/different thread.
      */
     private ExecutorService executor;
-     
+    
     public MultiThreadedJplQuery(JplEngine prologEngine, Term goal, boolean errorHandledQuery, Jpc context) {
     	super(new SingleThreadedJplQuery(prologEngine, goal, errorHandledQuery, context));
     }
@@ -53,64 +56,210 @@ public class MultiThreadedJplQuery extends QueryAdapter {
     private void releaseExecutor() {
     	executor.shutdownNow();
         executor = null;
+        resetJplQuery();
+    }
+
+    private SingleThreadedJplQuery getQuery() {
+    	return (SingleThreadedJplQuery)query;
     }
     
+    private void resetJplQuery() {
+    	getQuery().resetJplQuery();
+    }
     
     @Override
-    protected void basicClose() {
-        executor = getExecutor();
+    public void close() {
         try {
-        	executor.submit(new Runnable() {
+        	submit(new Runnable() {
 			    @Override
 			    public void run() {
-			    	SingleThreadedJplQuery stQuery = (SingleThreadedJplQuery)query;
-			    	try {
-			    		stQuery.close();
-			    	} finally {
-			    		stQuery.resetJplQuery();
-			    	}
+			    	MultiThreadedJplQuery.super.close();
 			    }
-			}).get();
-        } catch (ExecutionException e) {
-        	Throwable cause = e.getCause();
-        	if(cause instanceof RuntimeException)
-        		throw (RuntimeException)cause;
-        	else
-        		throw new RuntimeException(cause);
-        } catch(InterruptedException e) {
-        	throw new RuntimeException(e);
+			});
+        } catch (Exception e) {
+        	throw(e);
         } finally {
         	releaseExecutor();
         }
     }
- 
+
+    
     @Override
-    public Solution basicNext() {
-        executor = getExecutor();
+    public long numberOfSolutions() {
+    	long numberOfSolutions;
+    	try {
+    		numberOfSolutions = submit(new Callable<Long>() {
+                @Override
+                public Long call() throws Exception {
+                	return MultiThreadedJplQuery.super.numberOfSolutions();
+                }
+            });
+    	} catch (IllegalStateException e) {
+    		throw(e);
+        } catch (Exception e) {
+        	releaseExecutor();
+        	throw(e);
+        }
+        releaseExecutor();
+        return numberOfSolutions;
+    }
+    
+    @Override
+    public boolean hasSolution() {
+    	boolean hasSolution;
+    	try {
+    		hasSolution = submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                	return MultiThreadedJplQuery.super.hasSolution();
+                }
+            });
+    	} catch (IllegalStateException e) {
+    		throw(e);
+        } catch (Exception e) {
+        	releaseExecutor();
+        	throw(e);
+        }
+        releaseExecutor();
+        return hasSolution;
+    }
+    
+    @Override
+    public boolean hasNext() {
+    	try {
+    		return submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                	return MultiThreadedJplQuery.super.hasNext();
+                }
+            });
+    	}catch (Exception e) {
+        	releaseExecutor();
+        	throw(e);
+        }
+    }
+    
+    @Override
+    public Solution next() {
         try {
-            return executor.submit(new Callable<Solution>() {
+            return submit(new Callable<Solution>() {
                 @Override
                 public Solution call() throws Exception {
-                	SingleThreadedJplQuery stQuery = (SingleThreadedJplQuery)query;
-                	try {
-                        return stQuery.next();
-                	} catch(Exception e) {
-                		stQuery.resetJplQuery();
-                		throw e;
-                	}
+                	return MultiThreadedJplQuery.super.next();
                 }
-            }).get();
-        } catch (ExecutionException e) {
+            });
+        } catch (Exception e) {
         	releaseExecutor();
-        	Throwable cause = e.getCause();
-        	if(cause instanceof RuntimeException) {
-        		throw (RuntimeException)cause;
-        	} else {
-        		throw new RuntimeException(cause);
-        	}
-        } catch(InterruptedException e) {
-        	throw new RuntimeException(e);
+        	throw(e);
         }
     }
 	
+    @Override
+    public Solution oneSolutionOrThrow() {
+        Solution solution;
+        try {
+        	solution = submit(new Callable<Solution>() {
+                @Override
+                public Solution call() throws Exception {
+                	return MultiThreadedJplQuery.super.oneSolutionOrThrow();
+                }
+            });
+        } catch (IllegalStateException e) {
+        	throw(e);
+        } catch (Exception e) {
+        	releaseExecutor();
+        	throw(e);
+        }
+        releaseExecutor();
+        return solution;
+    }
+    
+    @Override
+    public List<Solution> allSolutions() {
+        List<Solution> solutions;
+        try {
+        	solutions = submit(new Callable<List<Solution>>() {
+                @Override
+                public List<Solution> call() throws Exception {
+                	return MultiThreadedJplQuery.super.allSolutions();
+                }
+            });
+        } catch (IllegalStateException e) {
+        	throw(e);
+        } catch (Exception e) {
+        	releaseExecutor();
+        	throw(e);
+        }
+        releaseExecutor();
+        return solutions;
+    }
+    
+    public List<Solution> nSolutions(final long n) {
+    	List<Solution> solutions;
+        try {
+        	solutions = submit(new Callable<List<Solution>>() {
+                @Override
+                public List<Solution> call() throws Exception {
+                	return MultiThreadedJplQuery.super.nSolutions(n);
+                }
+            });
+        } catch (IllegalStateException e) {
+        	throw(e);
+        } catch (Exception e) {
+        	releaseExecutor();
+        	throw(e);
+        }
+        releaseExecutor();
+        return solutions;
+    }
+    
+    @Override
+    public List<Solution> solutionsRange(final long from, final long to) {
+        List<Solution> solutions;
+        try {
+        	solutions = submit(new Callable<List<Solution>>() {
+                @Override
+                public List<Solution> call() throws Exception {
+                	return MultiThreadedJplQuery.super.solutionsRange(from, to);
+                }
+            });
+        } catch (IllegalStateException e) {
+        	throw(e);
+        } catch (Exception e) {
+        	releaseExecutor();
+        	throw(e);
+        }
+        releaseExecutor();
+        return solutions;
+    }
+    
+    
+    private void submit(Runnable runnable) {
+    	try {
+    		getExecutor().submit(runnable).get();
+    	} catch(Exception e) {
+    		rethrowExecutorException(e);
+    	}
+    }
+    
+    private <T> T submit(Callable<T> callable) {
+    	try {
+    		return getExecutor().submit(callable).get();
+    	} catch(Exception e) {
+    		return rethrowExecutorException(e);
+    	}
+    }
+    
+    private <T> T rethrowExecutorException(Throwable e) {
+    	if(!(e instanceof ExecutionException)) {
+    		if(e instanceof RuntimeException) {
+        		throw (RuntimeException)e;
+        	} else {
+        		throw new RuntimeException(e);
+        	}
+    	} else {
+    		return rethrowExecutorException(e.getCause());
+    	}
+    }
+    
 }
