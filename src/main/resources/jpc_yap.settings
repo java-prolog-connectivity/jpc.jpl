@@ -4,7 +4,7 @@ engines: [
     "id": "yap",
     "categoryNames": [""],
     "factoryClass": "org.jpc.engine.jpl.JplYapDriver",
-    "factoryMethod": "createMTPrologEngine"
+    "%factoryMethod": "createMTPrologEngine"
   }
 ]
 }
