@@ -68,9 +68,10 @@ public class SingleThreadedJplQuery extends PrologQuery {
                     nextSolution.put(varName, term);
                 }
                 querySolution = new Solution(nextSolution, getPrologEngine(), getJpcContext());
-            }
+            } else
+            	jplQuery.close();
         } catch(Exception e) {
-            jplQuery = null;
+        	jplQuery.close();
             throw e;
         }
         if(querySolution != null)

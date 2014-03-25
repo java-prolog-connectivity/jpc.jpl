@@ -1,6 +1,7 @@
 package org.jpc.engine.jpl;
  
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -11,15 +12,18 @@ import org.jpc.Jpc;
 import org.jpc.query.QueryAdapter;
 import org.jpc.query.Solution;
 import org.jpc.term.Term;
+import org.minitoolbox.concurrent.ExecutionResult;
+
+import com.google.common.base.Optional;
  
 /**
  * This class wraps a JPL query in such a way that it does not have the JPL limitations regarding multithreading support.
  * @author sergioc
  *
  */
-//IMPLEMENTATION NOTES: This is still experimental. It crashes from time to time. Horribly difficult to debug.
-//The class basically overrides all the public methods in the ancestor classes and executes them (with a super call) in the context of an executor service (into another thread).
-//It is important that the overridden methods in this class are not synchronized, otherwise it will create a deadlock when executing the super (typically synchronized) methods.
+//IMPLEMENTATION NOTES: This is still experimental. It crashes from time to time. Rather difficult to debug.
+//The class basically overrides all the public methods in the ancestor classes and executes them (with a super call) in the context of an executor service (into a dedicated thread).
+//It is important that the overridden methods in this class are not synchronized, otherwise it will cause a deadlock when executing the super (typically synchronized) methods.
 public class MultiThreadedJplQuery extends QueryAdapter {
  
     /**
@@ -76,17 +80,50 @@ public class MultiThreadedJplQuery extends QueryAdapter {
 			    	MultiThreadedJplQuery.super.close();
 			    }
 			});
-        } catch (Exception e) {
-        	throw(e);
         } finally {
         	releaseExecutor();
         }
     }
-
+    
+    @Override
+    public boolean hasNext() {
+    	try {
+    		Boolean hasNext = submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                	return MultiThreadedJplQuery.super.hasNext();
+                }
+            });
+    		if(!hasNext)
+    			releaseExecutor();
+    		return hasNext;
+    	} catch (Exception e) {
+        	releaseExecutor();
+        	return rethrow(e);
+        }
+    }
+    
+    @Override
+    public Solution next() {
+        try {
+            return submit(new Callable<Solution>() {
+                @Override
+                public Solution call() throws Exception {
+                	return MultiThreadedJplQuery.super.next();
+                }
+            });
+        } catch (NoSuchElementException e) {
+        	releaseExecutor();
+        	throw(e);
+        } catch (Exception e) {
+        	releaseExecutor();
+        	throw(e);
+        }
+    }
     
     @Override
     public long numberOfSolutions() {
-    	long numberOfSolutions;
+    	Long numberOfSolutions;
     	try {
     		numberOfSolutions = submit(new Callable<Long>() {
                 @Override
@@ -106,7 +143,7 @@ public class MultiThreadedJplQuery extends QueryAdapter {
     
     @Override
     public boolean hasSolution() {
-    	boolean hasSolution;
+    	Boolean hasSolution;
     	try {
     		hasSolution = submit(new Callable<Boolean>() {
                 @Override
@@ -123,37 +160,27 @@ public class MultiThreadedJplQuery extends QueryAdapter {
         releaseExecutor();
         return hasSolution;
     }
-    
+	
     @Override
-    public boolean hasNext() {
-    	try {
-    		return submit(new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                	return MultiThreadedJplQuery.super.hasNext();
-                }
-            });
-    	}catch (Exception e) {
-        	releaseExecutor();
-        	throw(e);
-        }
-    }
-    
-    @Override
-    public Solution next() {
+    public Optional<Solution> oneSolution() {
+    	Optional<Solution> solutionOpt;
         try {
-            return submit(new Callable<Solution>() {
+        	solutionOpt = submit(new Callable<Optional<Solution>>() {
                 @Override
-                public Solution call() throws Exception {
-                	return MultiThreadedJplQuery.super.next();
+                public Optional<Solution> call() throws Exception {
+                	return MultiThreadedJplQuery.super.oneSolution();
                 }
             });
+        } catch (IllegalStateException e) {
+        	throw(e);
         } catch (Exception e) {
         	releaseExecutor();
         	throw(e);
         }
+        releaseExecutor();
+        return solutionOpt;
     }
-	
+    
     @Override
     public Solution oneSolutionOrThrow() {
         Solution solution;
@@ -213,6 +240,7 @@ public class MultiThreadedJplQuery extends QueryAdapter {
         return solutions;
     }
     
+    
     @Override
     public List<Solution> solutionsRange(final long from, final long to) {
         List<Solution> solutions;
@@ -225,7 +253,7 @@ public class MultiThreadedJplQuery extends QueryAdapter {
             });
         } catch (IllegalStateException e) {
         	throw(e);
-        } catch (Exception e) {
+        } catch(Exception e) {
         	releaseExecutor();
         	throw(e);
         }
@@ -234,29 +262,47 @@ public class MultiThreadedJplQuery extends QueryAdapter {
     }
     
     
-    private void submit(Runnable runnable) {
-    	try {
-    		getExecutor().submit(runnable).get();
-    	} catch(Exception e) {
-    		rethrowExecutorException(e);
-    	}
+
+
+    private void submit(final Runnable runnable) {
+    	submit(new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				runnable.run();
+				return null;
+			}
+    	});
     }
-    
-    private <T> T submit(Callable<T> callable) {
+
+    private <T> T submit(final Callable<T> callable) {
+    	Callable<ExecutionResult<T>> executionResultCallable = new Callable<ExecutionResult<T>>() {
+			@Override
+			public ExecutionResult<T> call() throws Exception {
+				try {
+					return new ExecutionResult<>(callable.call());
+				} catch(Exception e) {
+					return new ExecutionResult<>(e);
+				}
+			}
+    	};
     	try {
-    		return getExecutor().submit(callable).get();
+    		return getExecutor().submit(executionResultCallable).get().getResult();
     	} catch(Exception e) {
     		return rethrowExecutorException(e);
     	}
     }
     
+    private <T> T rethrow(Throwable e) {
+    	if(e instanceof RuntimeException) {
+    		throw (RuntimeException)e;
+    	} else {
+    		throw new RuntimeException(e);
+    	}
+    }
+    
     private <T> T rethrowExecutorException(Throwable e) {
     	if(!(e instanceof ExecutionException)) {
-    		if(e instanceof RuntimeException) {
-        		throw (RuntimeException)e;
-        	} else {
-        		throw new RuntimeException(e);
-        	}
+    		return rethrow(e);
     	} else {
     		return rethrowExecutorException(e.getCause());
     	}
