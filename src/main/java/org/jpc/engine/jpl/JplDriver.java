@@ -1,17 +1,26 @@
 package org.jpc.engine.jpl;
 
+import static org.jpc.engine.prolog.ReturnSpecifierConstants.RETURN_SERIALIZED_SPECIFIER;
+import static org.jpc.engine.prolog.ReturnSpecifierConstants.RETURN_TERM_SPECIFIER;
 import static org.jpc.engine.prolog.ThreadModel.MULTI_THREADED;
 import static org.jpc.engine.prolog.ThreadModel.SINGLE_THREADED;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Collection;
 
 import jpl.JPL;
 
+import org.jpc.Jpc;
+import org.jpc.converter.catalog.jrefterm.TermToJRefTermTypeConverter;
+import org.jpc.converter.catalog.serialized.ToSerializedConverter;
 import org.jpc.engine.listener.DriverStateListener;
 import org.jpc.engine.prolog.PrologEngineInitializationException;
 import org.jpc.engine.prolog.driver.PrologEngineFactory;
 import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
+import org.jpc.term.Compound;
+import org.jpc.term.Term;
+import org.jpc.term.jrefterm.JRefTermType;
 import org.jpc.util.JpcPreferences;
 import org.jpc.util.engine.supported.EngineDescription;
 import org.minitoolbox.collections.CollectionsUtil;
@@ -23,18 +32,12 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	private static final Logger logger = LoggerFactory.getLogger(JplDriver.class);
 	public static final String JPL_LIBRARY_NAME = "JPL";
 	//public static final String JPLPATH_ENV_VAR = "JPLPATH"; //environment variable with the path to the JPL library. This will determine if the prolog engine is SWI or YAP
-	
-	/**
-	 * it can be only one (JPL managed) PrologEngine per JVM, then this variable is global
-	 * it does not need to be declared volatile since it is only used by the (already synchronized) public methods isEnabled and createPrologEngine
-	 */
-	private static boolean jplSessionStarted = false; 
 
 	private static final Collection<DriverStateListener> stateListeners = CollectionsUtil.createWeakSet();
 	
 	private String jplPath;
 	private final String jplPathPropertyVar;
-	
+
 	public JplDriver(EngineDescription engineDescription, String jplPathPropertyVar, JpcPreferences preferences) {
 		super(engineDescription, preferences);
 		this.jplPathPropertyVar = jplPathPropertyVar;
@@ -50,7 +53,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 
 	@Override
 	protected boolean isInstanceRunning() {
-		return jplSessionStarted;
+		return JplEngine.prologEngine != null;
 	}
 	
 	@Override
@@ -93,9 +96,8 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	
 	@Override
 	protected synchronized JplEngine createPrologEngine(PrologEngineFactory<JplEngine> basicFactory) {
-		JplEngine prologEngine = super.createPrologEngine(basicFactory);
-		jplSessionStarted = true;
-		return prologEngine;
+		JplEngine.prologEngine = super.createPrologEngine(basicFactory);
+		return JplEngine.prologEngine;
 	}
 	
 	@Override
@@ -127,4 +129,36 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	protected Collection<DriverStateListener> getListeners() {
 		return stateListeners;
 	}
+	
+	
+	
+	public static jpl.Term evalAsTerm(jpl.Term evalTermJpl) {
+		Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
+		Term expTerm = evalTerm.arg(1);
+		Object result = Jpc.getDefault().fromTerm(expTerm);
+		Term resultTerm;
+		Compound returnSpecifierTerm = (Compound) evalTerm.arg(2);
+		if(returnSpecifierTerm.getNameString().equals(RETURN_TERM_SPECIFIER)) {
+			resultTerm = Jpc.getDefault().toTerm(result);
+		} else if(returnSpecifierTerm.getNameString().equals(RETURN_SERIALIZED_SPECIFIER)) {
+			resultTerm = new ToSerializedConverter().toTerm((Serializable)result, Compound.class, Jpc.getDefault());
+		} else {
+			JRefTermType jRefTermType = new TermToJRefTermTypeConverter().fromTerm((Compound) returnSpecifierTerm, JRefTermType.class, Jpc.getDefault());
+			resultTerm = jRefTermType.toTerm(result, Jpc.getDefault());
+		}
+		return JplBridge.fromJpcToJpl(resultTerm);
+	}
+	
+	public static Object evalAsObject(jpl.Term evalTermJpl) {
+		Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
+		Term targetTerm = evalTerm.arg(1);
+		return Jpc.getDefault().fromTerm(targetTerm);
+	}
+
+	public static void newWeakJRefTerm(Object ref, jpl.Term jrefTermJpl) {
+		Compound jrefTerm = (Compound) JplBridge.fromJplToJpc(jrefTermJpl);
+		Jpc.getDefault().newWeakJRefTerm(ref, jrefTerm);
+	}
+
 }
+

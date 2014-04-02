@@ -1,67 +1,100 @@
 :- use_module(library(jpl)).
-:- op(50, xfx, returns).
 
 
-:- object(java,
-	implements(javap)).
-
-	get_field(Class, Field, Value) :-
-		jpl:jpl_get(Class, Field, Value).
-
-	set_field(Class, Field, Value) :-
-		jpl:jpl_set(Class, Field, Value).
-
-	method_call(Ref, Method, Params, Result) :-
-		jpl:jpl_call(Ref, Method, Params, Result).
-	
-	new_object(Class, Params, Ref) :- 
-		jpl:jpl_new(Class, Params, Ref).
-	
-:- end_object.
-
-
-
-:- object(java(_),
+:- object(java(_Reference, _ReturnValue),
 	implements(forwarding, javap)).
 
-	get_field(Class, Field, Value) :-
-		jpl:jpl_get(Class, Field, Value).
+	:- info([
+		version is 1.0,
+		author is 'Sergio Castro and Paulo Moura',
+		date is 2014/03/25,
+		comment is 'Low level API for calling Java from Logtalk using familiar message sending syntax.',
+		parnames is ['Reference', 'ReturnValue']
+	]).
 
-	set_field(Class, Field, Value) :-
-		jpl:jpl_set(Class, Field, Value).
+	:- use_module(jpl, [
+		jpl_get/3, jpl_set/3,
+		jpl_new/3,
+		jpl_call/4
+	]).
 
-	:- public(returns/2).
-	:- public(op(50, xfx, returns)).
+	:- uses(user, [
+		atom_to_term/3
+	]).
 
-	returns(Message, Output) :-
-		parameter(1, Ref),
-		(	Ref = class(Class) ->
-			Handle = Class
-		;	jpl:jpl_is_class(Ref) ->
-			Handle = Ref
-		;	jpl:jpl_is_object(Ref) ->
-			Handle = Ref
-		;	% assume that we've a class name (an atom)
-			jpl:jpl_classname_to_class(Ref, Handle)
-		),
-		Message =.. [Functor| Arguments],
-		writeq(jpl:jpl_call(Handle, Functor, Arguments, Output)), nl,
-		jpl:jpl_call(Handle, Functor, Arguments, Output).
+
+	get_field(Field, Value) :-
+		parameter(1, Class),
+		jpl_get(Class, Field, Value).
+
+	set_field(Field, Value) :-
+		parameter(1, Class),
+		jpl_set(Class, Field, Value).
+
+
+	check_output_mode(Output) :- var(Output), Output = term(_).
+	check_output_mode(Output) :- \+ var(Output).
+
+	set_result(term(JavaResult), JavaResult).
+	set_result(serialized(JavaResult), JavaResult).
+	%set_result(jref(JavaResult), JavaResult).
+	set_result(strong(jref(JavaResult)), JavaResult).
+	set_result(weak(jref(JavaResult)), JavaResult).
+	set_result(soft(jref(JavaResult)), JavaResult).
+	set_result(strong(jref_term(JavaResult)), JavaResult).
+	set_result(weak(jref_term(JavaResult)), JavaResult).
+	set_result(soft(jref_term(JavaResult)), JavaResult).
+
+
+	eval(DriverClass, Eval, jref(JavaResult)) :- 
+		!,
+		jpl_call(DriverClass, 'evalAsObject', [{Eval}], JavaResult),
+		jpl_call(DriverClass, 'newWeakJRefTerm', [JavaResult, {JavaResult}], _).
+		
+	eval(DriverClass, Eval, Output) :- 
+		jpl_call(DriverClass, 'evalAsTerm', [{Eval}], {JavaResult}),
+		set_result(Output, JavaResult).
+		
+		
+	invoke(Message) :-
+		parameter(1, Reference),
+		parameter(2, Output),
+		check_output_mode(Output),
+		LogtalkCall = Reference::Message,
+		Eval = eval(LogtalkCall, Output),
+		%logtalk::print_message(comment, jpc, calling(jpl_call(class([org,jpc,engine,jpl],['JplDriver']), 'evalAsTerm', [{Eval}], {JavaResult}))),
+		DriverClass = class([org,jpc,engine,jpl],['JplDriver']),
+		eval(DriverClass, Eval, Output).
+
+
+	forward(Message) :-
+		invoke(Message).
+
 
 /*
-	:- public(new/1).
-	new(Ref) :- 
-		parameter(1, Class),
-		jpl:jpl_new(Class, [], Ref).
-
-	:- public(new/2).
-	new(Params, Ref) :- 
-		parameter(1, Class),
-		jpl:jpl_new(Class, Params, Ref).
+	forget(Ref) :- 
+		term_to_atom(Ref, RefAtom), 
+		_forget(RefAtom).
 */
-	forward(Message) :-
-		parameter(1, Ref),
-		Message =.. [Functor| Arguments],
-		jpl:jpl_call(Ref, Functor, Arguments, _).
+
+/*
+	:- multifile(logtalk::message_prefix_stream/4).
+	:- dynamic(logtalk::message_prefix_stream/4).
+
+	% Quintus Prolog based prefixes (also used in SICStus Prolog):
+	logtalk::message_prefix_stream(comment, jpc, 'INFO ', user_output).
+	logtalk::message_prefix_stream(warning, jpc, 'WARNING ', user_output).
+	logtalk::message_prefix_stream(error, jpc,   'ERROR ', user_output).
+
+	:- multifile(logtalk::message_tokens//2).
+	:- dynamic(logtalk::message_tokens//2).
+
+	% messages for tests handling
+
+	logtalk::message_tokens(calling(Goal), jpc) -->
+		[nl, '    CALLING: ~q'-[Goal], nl].
+*/
 
 :- end_object.
+
+
