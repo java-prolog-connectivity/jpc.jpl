@@ -1,3 +1,4 @@
+/*
 :- object(hook,
 	implements(expanding)).
 
@@ -12,3 +13,4 @@
 	%goal_expansion(print_it_or_else(Arg), (write(Arg), nl)).
 
 :- end_object.
+*/
