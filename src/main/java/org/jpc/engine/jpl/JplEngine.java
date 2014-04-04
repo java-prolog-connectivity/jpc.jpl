@@ -3,17 +3,12 @@ package org.jpc.engine.jpl;
 import static org.jpc.engine.prolog.ThreadModel.SINGLE_THREADED;
 
 import org.jpc.Jpc;
-import org.jpc.converter.catalog.jrefterm.TermToJRefTermTypeConverter;
 import org.jpc.engine.prolog.AbstractPrologEngine;
 import org.jpc.engine.prolog.ThreadModel;
 import org.jpc.error.PrologParsingException;
 import org.jpc.error.SyntaxError;
 import org.jpc.query.Query;
-import org.jpc.term.Compound;
 import org.jpc.term.Term;
-import org.jpc.term.Var;
-import org.jpc.term.jrefterm.JRefTermType;
-import org.jpc.term.jrefterm.JRefTermType.Opacity;
 import org.jpc.util.JpcPreferences;
 import org.jpc.util.engine.PrologResourceLoader;
 import org.slf4j.Logger;
@@ -83,8 +78,8 @@ public class JplEngine extends AbstractPrologEngine {
 	}
 
 	@Override
-	protected void loadJpcLogtalkFiles() {
-		super.loadJpcLogtalkFiles(); //load default JPC Logtalk files.
+	protected void loadLogtalkFiles() {
+		super.loadLogtalkFiles(); //load default JPC Logtalk files.
 		PrologResourceLoader resourceLoader = new PrologResourceLoader(this);
 		resourceLoader.logtalkLoad(JPL_LOGTALK_LOADER_FILE); //load Logtalk JPL specific Logtalk files.
 	}
