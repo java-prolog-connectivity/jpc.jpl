@@ -12,9 +12,11 @@ import java.util.Collection;
 import jpl.JPL;
 
 import org.jpc.Jpc;
+import org.jpc.JpcException;
 import org.jpc.converter.catalog.jrefterm.TermToJRefTermTypeConverter;
 import org.jpc.converter.catalog.serialized.ToSerializedConverter;
 import org.jpc.engine.listener.DriverStateListener;
+import org.jpc.engine.prolog.PrologEngine;
 import org.jpc.engine.prolog.PrologEngineInitializationException;
 import org.jpc.engine.prolog.driver.PrologEngineFactory;
 import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
@@ -23,6 +25,8 @@ import org.jpc.term.Term;
 import org.jpc.term.jrefterm.JRefTermType;
 import org.jpc.util.JpcPreferences;
 import org.jpc.util.engine.supported.EngineDescription;
+import org.jpc.util.engine.supported.Swi;
+import org.jpc.util.engine.supported.Yap;
 import org.minitoolbox.collections.CollectionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +135,16 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	}
 	
 	
+	public static void setupFromProlog(String dialect) {
+		if(dialect.equals(Swi.SWI_DIALECT)) {
+			//new JplSwiDriver().createPrologEngine().withLogtalk();
+			PrologEngine pe = new JplSwiDriver().createPrologEngine();
+			pe.loadJpcForLogtalk();
+		} else if(dialect.equals(Yap.YAP_DIALECT)) {
+			new JplYapDriver().createPrologEngine().withLogtalk();
+		} else
+			throw new JpcException("Unrecognized dialect: " + dialect + ".");
+	}
 	
 	public static jpl.Term evalAsTerm(jpl.Term evalTermJpl) {
 		Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
