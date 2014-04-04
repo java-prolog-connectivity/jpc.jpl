@@ -62,8 +62,8 @@
 		check_output_mode(Output),
 		LogtalkCall = Reference::Message,
 		Eval = eval(LogtalkCall, Output),
-		%logtalk::print_message(comment, jpc, calling(jpl_call(class([org,jpc,engine,jpl],['JplDriver']), 'evalAsTerm', [{Eval}], {JavaResult}))),
 		DriverClass = class([org,jpc,engine,jpl],['JplDriver']),
+		%logtalk::print_message(comment, jpc, calling(jpl_call(DriverClass, 'evalAsTerm', [{Eval}], {JavaResult}))),
 		eval(DriverClass, Eval, Output).
 
 
