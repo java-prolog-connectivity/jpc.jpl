@@ -1,5 +1,5 @@
 
 :- initialization((
 	%set_logtalk_flag(report, off),
-	logtalk_load([jpl, jpc_core(load_driver_required), prolog_engines])
+	logtalk_load([jpc_driver, jpc_core(load_driver_required), prolog_engines])
 )).
