@@ -17,6 +17,7 @@
 		jpl_call/4
 	]).
 
+
 	set_result(term(JavaResult), JavaResult).
 	set_result(serialized(JavaResult), JavaResult).
 	set_result(jref(JavaResult), JavaResult).
@@ -34,15 +35,26 @@
 		%logtalk::print_message(comment, jpc, calling(eval(DriverClass, Eval, Output))),
 		eval(DriverClass, Eval, Output).
 
-	eval(DriverClass, Eval, jref(JavaResult)) :- 
-		!,
-		jpl_call(DriverClass, 'evalAsObject', [{Eval}], JavaResult),
-		jpl_call(DriverClass, 'newWeakJRefTerm', [JavaResult, {JavaResult}], _).
+
+	eval(DriverClass, Eval, Output) :- 
+		\+ var(Output),
+		Output = jref(JavaResult),
+		jpl_call(DriverClass, 'evalAsObject', [{Eval}], JavaResultJpl),
+		(\+ (JavaResultJpl = '@'(null)) -> (
+			JavaResult = JavaResultJpl,
+			jpl_call(DriverClass, 'newWeakJRefTerm', [JavaResult, {JavaResult}], _)
+		)).
+
 		
 	eval(DriverClass, Eval, Output) :- 
+		\+ var(Output),
+		\+ Output = jref(_),
 		jpl_call(DriverClass, 'evalAsTerm', [{Eval}], {JavaResult}),
 		set_result(Output, JavaResult).
 		
+	eval(DriverClass, Eval, Output) :- 
+		var(Output),
+		jpl_call(DriverClass, 'evalAsTerm', [{Eval}], {_}).
 
 /*
 	:- multifile(logtalk::message_prefix_stream/4).

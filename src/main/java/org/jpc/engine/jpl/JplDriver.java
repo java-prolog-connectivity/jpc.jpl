@@ -22,6 +22,7 @@ import org.jpc.engine.prolog.driver.PrologEngineFactory;
 import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
 import org.jpc.term.Compound;
 import org.jpc.term.Term;
+import org.jpc.term.Var;
 import org.jpc.term.jrefterm.JRefTermType;
 import org.jpc.util.JpcPreferences;
 import org.jpc.util.engine.supported.EngineDescription;
@@ -147,31 +148,53 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	}
 	
 	public static jpl.Term evalAsTerm(jpl.Term evalTermJpl) {
-		Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
-		Term expTerm = evalTerm.arg(1);
-		Object result = Jpc.getDefault().fromTerm(expTerm);
-		Term resultTerm;
-		Compound returnSpecifierTerm = (Compound) evalTerm.arg(2);
-		if(returnSpecifierTerm.getNameString().equals(RETURN_TERM_SPECIFIER)) {
-			resultTerm = Jpc.getDefault().toTerm(result);
-		} else if(returnSpecifierTerm.getNameString().equals(RETURN_SERIALIZED_SPECIFIER)) {
-			resultTerm = new ToSerializedConverter().toTerm((Serializable)result, Compound.class, Jpc.getDefault());
-		} else {
-			JRefTermType jRefTermType = new TermToJRefTermTypeConverter().fromTerm((Compound) returnSpecifierTerm, JRefTermType.class, Jpc.getDefault());
-			resultTerm = jRefTermType.toTerm(result, Jpc.getDefault());
+		try {
+			Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
+			Term expTerm = evalTerm.arg(1);
+			Object result = Jpc.getDefault().fromTerm(expTerm);
+			Term resultTerm;
+			if(evalTerm.arg(2) instanceof Compound) {
+				Compound returnSpecifierTerm = (Compound) evalTerm.arg(2);
+				if(returnSpecifierTerm.getNameString().equals(RETURN_TERM_SPECIFIER)) {
+					resultTerm = Jpc.getDefault().toTerm(result);
+				} else if(returnSpecifierTerm.getNameString().equals(RETURN_SERIALIZED_SPECIFIER)) {
+					resultTerm = new ToSerializedConverter().toTerm((Serializable)result, Compound.class, Jpc.getDefault());
+				} else {
+					JRefTermType jRefTermType = new TermToJRefTermTypeConverter().fromTerm((Compound) returnSpecifierTerm, JRefTermType.class, Jpc.getDefault());
+					resultTerm = jRefTermType.toTerm(result, Jpc.getDefault());
+				}
+				
+			} else if(evalTerm.arg(2) instanceof Var)
+				resultTerm = Var.ANONYMOUS_VAR;
+			else
+				throw new JpcException("Wrong return specifier: " + evalTerm.arg(2));
+			
+			return JplBridge.fromJpcToJpl(resultTerm);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw e;
 		}
-		return JplBridge.fromJpcToJpl(resultTerm);
 	}
 	
 	public static Object evalAsObject(jpl.Term evalTermJpl) {
-		Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
-		Term targetTerm = evalTerm.arg(1);
-		return Jpc.getDefault().fromTerm(targetTerm);
+		try {
+			Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
+			Term targetTerm = evalTerm.arg(1);
+			return Jpc.getDefault().fromTerm(targetTerm);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 
 	public static void newWeakJRefTerm(Object ref, jpl.Term jrefTermJpl) {
-		Compound jrefTerm = (Compound) JplBridge.fromJplToJpc(jrefTermJpl);
-		Jpc.getDefault().newWeakJRefTerm(ref, jrefTerm);
+		try {
+			Compound jrefTerm = (Compound) JplBridge.fromJplToJpc(jrefTermJpl);
+			Jpc.getDefault().newWeakJRefTerm(ref, jrefTerm);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 
 }
