@@ -6,8 +6,15 @@ import static org.jpc.engine.prolog.ThreadModel.MULTI_THREADED;
 import static org.jpc.engine.prolog.ThreadModel.SINGLE_THREADED;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
+import java.util.TimeZone;
 
 import jpl.JPL;
 
@@ -171,7 +178,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 			
 			return JplBridge.fromJpcToJpl(resultTerm);
 		} catch(Exception e) {
-			e.printStackTrace();
+			handleJavaSideException(e);
 			throw e;
 		}
 	}
@@ -182,7 +189,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 			Term targetTerm = evalTerm.arg(1);
 			return Jpc.getDefault().fromTerm(targetTerm);
 		} catch(Exception e) {
-			e.printStackTrace();
+			handleJavaSideException(e);
 			throw e;
 		}
 	}
@@ -192,10 +199,36 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 			Compound jrefTerm = (Compound) JplBridge.fromJplToJpc(jrefTermJpl);
 			Jpc.getDefault().newWeakJRefTerm(ref, jrefTerm);
 		} catch(Exception e) {
-			e.printStackTrace();
+			handleJavaSideException(e);
 			throw e;
 		}
 	}
 
+	//this adhoc method should be replaced by something better, maybe using slf4j.
+	private static void handleJavaSideException(Exception e) {
+		e.printStackTrace();
+		File tmpDir = new JpcPreferences().getJpcTmpDirectory();
+		if(!tmpDir.exists())
+			try {
+				tmpDir.createNewFile();
+			} catch (IOException e1) {
+				throw new RuntimeException(e1);
+			}
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss");  
+	    df.setTimeZone(TimeZone.getTimeZone("PST"));  
+	    String timeStamp = df.format(new Date());  
+		File logFile = new File(tmpDir, "log"+"_"+timeStamp);
+		try {
+			logFile.createNewFile();
+		} catch (IOException e1) {
+			throw new RuntimeException(e1);
+		}
+		try(PrintStream ps = new PrintStream(logFile)) {
+			e.printStackTrace(ps);
+		} catch (FileNotFoundException e1) {
+			throw new RuntimeException(e1);
+		}
+	}
+	
 }
 
