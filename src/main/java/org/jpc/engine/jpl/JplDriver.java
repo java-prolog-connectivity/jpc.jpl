@@ -155,30 +155,31 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	}
 	
 	public static jpl.Term evalAsTerm(jpl.Term evalTermJpl) {
+		Jpc jpc = Jpc.getDefault();
 		try {
 			Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
 			Term expTerm = evalTerm.arg(1);
-			Object result = Jpc.getDefault().fromTerm(expTerm);
+			Object result = jpc.fromTerm(expTerm);
 			Term resultTerm;
 			if(evalTerm.arg(2) instanceof Compound) {
 				Compound returnSpecifierTerm = (Compound) evalTerm.arg(2);
 				if(returnSpecifierTerm.getNameString().equals(RETURN_TERM_SPECIFIER)) {
-					resultTerm = Jpc.getDefault().toTerm(result);
+					resultTerm = jpc.toTerm(result);
 				} else if(returnSpecifierTerm.getNameString().equals(RETURN_SERIALIZED_SPECIFIER)) {
-					resultTerm = new ToSerializedConverter().toTerm((Serializable)result, Compound.class, Jpc.getDefault());
+					resultTerm = new ToSerializedConverter().toTerm((Serializable)result, Compound.class, jpc);
 				} else {
-					JRefTermType jRefTermType = new TermToJRefTermTypeConverter().fromTerm((Compound) returnSpecifierTerm, JRefTermType.class, Jpc.getDefault());
-					resultTerm = jRefTermType.toTerm(result, Jpc.getDefault());
+					JRefTermType jRefTermType = new TermToJRefTermTypeConverter().fromTerm((Compound) returnSpecifierTerm, JRefTermType.class, jpc);
+					resultTerm = jRefTermType.toTerm(result, jpc);
 				}
-				
 			} else if(evalTerm.arg(2) instanceof Var)
 				resultTerm = Var.ANONYMOUS_VAR;
 			else
 				throw new JpcException("Wrong return specifier: " + evalTerm.arg(2));
-			
 			return JplBridge.fromJpcToJpl(resultTerm);
 		} catch(Exception e) {
-			handleJavaSideException(e);
+			logJavaSideException(e);
+			//Term exceptionTerm = jpc.toTerm(e);
+			//return JplBridge.fromJpcToJpl(exceptionTerm);
 			throw e;
 		}
 	}
@@ -189,7 +190,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 			Term targetTerm = evalTerm.arg(1);
 			return Jpc.getDefault().fromTerm(targetTerm);
 		} catch(Exception e) {
-			handleJavaSideException(e);
+			logJavaSideException(e);
 			throw e;
 		}
 	}
@@ -199,13 +200,13 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 			Compound jrefTerm = (Compound) JplBridge.fromJplToJpc(jrefTermJpl);
 			Jpc.getDefault().newWeakJRefTerm(ref, jrefTerm);
 		} catch(Exception e) {
-			handleJavaSideException(e);
+			logJavaSideException(e);
 			throw e;
 		}
 	}
 
 	//this adhoc method should be replaced by something better, maybe using slf4j.
-	private static void handleJavaSideException(Exception e) {
+	private static void logJavaSideException(Exception e) {
 		e.printStackTrace();
 		File tmpDir = new JpcPreferences().getJpcTmpDirectory();
 		if(!tmpDir.exists())
