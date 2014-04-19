@@ -8,6 +8,6 @@
 	]).
 	
 	this_engine(PrologEngine) :-
-		class([org,jpc,engine,jpl],['JplEngine'])::getPrologEngine returns weak(jref(PrologEngine)).
+		class([org,jpc,engine,jpl],['JplEngine'])::getPrologEngine return weak(jref(PrologEngine)).
 
 :- end_object.
