@@ -20,7 +20,7 @@ import jpl.JPL;
 
 import org.jpc.Jpc;
 import org.jpc.JpcException;
-import org.jpc.converter.catalog.jrefterm.TermToJRefTermTypeConverter;
+import org.jpc.converter.catalog.refterm.TermToRefTermTypeConverter;
 import org.jpc.converter.catalog.serialized.ToSerializedConverter;
 import org.jpc.engine.listener.DriverStateListener;
 import org.jpc.engine.prolog.PrologEngine;
@@ -30,7 +30,7 @@ import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
 import org.jpc.term.Compound;
 import org.jpc.term.Term;
 import org.jpc.term.Var;
-import org.jpc.term.jrefterm.JRefTermType;
+import org.jpc.term.refterm.RefTermType;
 import org.jpc.util.JpcPreferences;
 import org.jpc.util.engine.supported.EngineDescription;
 import org.jpc.util.engine.supported.Swi;
@@ -168,8 +168,8 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 				} else if(returnSpecifierTerm.getNameString().equals(RETURN_SERIALIZED_SPECIFIER)) {
 					resultTerm = new ToSerializedConverter().toTerm((Serializable)result, Compound.class, jpc);
 				} else {
-					JRefTermType jRefTermType = new TermToJRefTermTypeConverter().fromTerm((Compound) returnSpecifierTerm, JRefTermType.class, jpc);
-					resultTerm = jRefTermType.toTerm(result, jpc);
+					RefTermType refTermType = new TermToRefTermTypeConverter().fromTerm((Compound) returnSpecifierTerm, RefTermType.class, jpc);
+					resultTerm = refTermType.toTerm(result, jpc);
 				}
 			} else if(evalTerm.arg(2) instanceof Var)
 				resultTerm = Var.ANONYMOUS_VAR;
@@ -198,7 +198,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	public static void newWeakJRefTerm(Object ref, jpl.Term jrefTermJpl) {
 		try {
 			Compound jrefTerm = (Compound) JplBridge.fromJplToJpc(jrefTermJpl);
-			Jpc.getDefault().newWeakJRefTerm(ref, jrefTerm);
+			Jpc.getDefault().newWeakRefTerm(ref, jrefTerm);
 		} catch(Exception e) {
 			logJavaSideException(e);
 			throw e;
