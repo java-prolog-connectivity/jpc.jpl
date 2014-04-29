@@ -1,5 +1,7 @@
 package org.jpc.engine.jpl;
 
+import static java.util.Arrays.asList;
+import static org.jpc.engine.prolog.ReturnSpecifierConstants.BB_REF_TERM_FLAG;
 import static org.jpc.engine.prolog.ReturnSpecifierConstants.RETURN_SERIALIZED_SPECIFIER;
 import static org.jpc.engine.prolog.ReturnSpecifierConstants.RETURN_TERM_SPECIFIER;
 import static org.jpc.engine.prolog.ThreadModel.MULTI_THREADED;
@@ -17,6 +19,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import jpl.JPL;
+import jpl.fli.Prolog;
 
 import org.jpc.Jpc;
 import org.jpc.JpcException;
@@ -27,9 +30,11 @@ import org.jpc.engine.prolog.PrologEngine;
 import org.jpc.engine.prolog.PrologEngineInitializationException;
 import org.jpc.engine.prolog.driver.PrologEngineFactory;
 import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
+import org.jpc.term.Atom;
 import org.jpc.term.Compound;
 import org.jpc.term.Term;
 import org.jpc.term.Var;
+import org.jpc.term.refterm.RefTermManager;
 import org.jpc.term.refterm.RefTermType;
 import org.jpc.util.JpcPreferences;
 import org.jpc.util.engine.supported.EngineDescription;
@@ -155,15 +160,30 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	}
 	
 	public static jpl.Term evalAsTerm(jpl.Term evalTermJpl) {
+		Term resultTerm;
 		Jpc jpc = Jpc.getDefault();
 		try {
 			Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
 			Term expTerm = evalTerm.arg(1);
-			Object result = jpc.fromTerm(expTerm);
-			Term resultTerm;
+			Object result = jpc.fromTerm(expTerm); //the result of evaluating the term expression in the Java side.
+			
 			if(evalTerm.arg(2) instanceof Compound) {
 				Compound returnSpecifierTerm = (Compound) evalTerm.arg(2);
-				if(returnSpecifierTerm.getNameString().equals(RETURN_TERM_SPECIFIER)) {
+				if(returnSpecifierTerm.getNameString().equals(BB_REF_TERM_FLAG)) { //the object in the Java side should be garbage collected only if the atom representing it is garbage collected in the Prolog side.
+					resultTerm = jpc.refTerm(result); //find out if the result is already associated with a term representation.
+					if(resultTerm == null) { //the result is not associated with a term representation.
+						Compound jpcTmpTerm = jpc.newRefTerm(result); //obtaining a temporal (black box) term reference to the Java object resulting of evaluating the term expression. 
+						jpl.Term jplRefTerm = (jpl.Term)new jpl.Query("jpl_call(class([org,jpc,engine,jpl],['JplDriver']), returnRef, [{" + jpcTmpTerm.toEscapedString() + "}], JplRef)").oneSolution().get("JplRef"); //get the JPL representation of the object.
+						jpc.forgetRefTerm(jpcTmpTerm);
+						Compound translatedJplRefTerm = (Compound) JplBridge.fromJplToJpc(jplRefTerm);
+						resultTerm = new Compound(RefTermManager.JREF_TERM_FUNCTOR_NAME, asList(translatedJplRefTerm.arg(1))); //adapting the JPL term representation to the JPC format for Prolog side references.
+						jpc.newWeakRefTerm(result, (Compound)resultTerm); //associating the term representation to the result object.
+					} else { //the result is already associated with a term representation.
+						String tag = ((Atom)resultTerm.arg(1)).getName();
+						if (!Prolog.is_tag(tag))
+							throw new JpcException("Attempt to use a Prolog side reference term with an object already associated with the term: " + resultTerm + ".");
+					}
+				} else if(returnSpecifierTerm.getNameString().equals(RETURN_TERM_SPECIFIER)) {
 					resultTerm = jpc.toTerm(result);
 				} else if(returnSpecifierTerm.getNameString().equals(RETURN_SERIALIZED_SPECIFIER)) {
 					resultTerm = new ToSerializedConverter().toTerm((Serializable)result, Compound.class, jpc);
@@ -175,15 +195,22 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 				resultTerm = Var.ANONYMOUS_VAR;
 			else
 				throw new JpcException("Wrong return specifier: " + evalTerm.arg(2));
-			return JplBridge.fromJpcToJpl(resultTerm);
+			if(!(resultTerm instanceof Var))
+				resultTerm = new Compound(JAVA_SIDE_RESULT_SPECIFIER, asList(resultTerm));
 		} catch(Exception e) {
 			logJavaSideException(e);
-			//Term exceptionTerm = jpc.toTerm(e);
-			//return JplBridge.fromJpcToJpl(exceptionTerm);
-			throw e;
+			Term exceptionTerm = jpc.toTerm(e);
+			resultTerm = new Compound(JAVA_SIDE_EXCEPTION_SPECIFIER, asList(exceptionTerm));
 		}
+		return JplBridge.fromJpcToJpl(resultTerm);
 	}
 	
+	public static Object returnRef(jpl.Term jplTerm) {
+		Compound refTerm = (Compound) JplBridge.fromJplToJpc(jplTerm);
+		return Jpc.getDefault().resolveRefTerm(refTerm);
+	}
+	
+	/*
 	public static Object evalAsObject(jpl.Term evalTermJpl) {
 		try {
 			Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
@@ -194,7 +221,8 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 			throw e;
 		}
 	}
-
+*/
+	/*
 	public static void newWeakJRefTerm(Object ref, jpl.Term jrefTermJpl) {
 		try {
 			Compound jrefTerm = (Compound) JplBridge.fromJplToJpc(jrefTermJpl);
@@ -204,7 +232,8 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 			throw e;
 		}
 	}
-
+*/
+	
 	//this adhoc method should be replaced by something better, maybe using slf4j.
 	private static void logJavaSideException(Exception e) {
 		e.printStackTrace();

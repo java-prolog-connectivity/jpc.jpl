@@ -18,6 +18,11 @@
 	]).
 
 
+	process_result(_, JavaResult) :- var(JavaResult).
+	process_result(_, JavaResult) :- \+ var(JavaResult), JavaResult = error(Error), throw(Error).
+	process_result(Result, JavaResult) :- \+ var(JavaResult), JavaResult = result(Returned), set_result(Result, Returned).
+	
+
 	set_result(term(JavaResult), JavaResult).
 	set_result(serialized(JavaResult), JavaResult).
 	set_result(jref(JavaResult), JavaResult).
@@ -34,28 +39,13 @@
 		DriverClass = class([org,jpc,engine,jpl],['JplDriver']),
 		%logtalk::print_message(comment, jpc, calling(eval(DriverClass, Eval, Output))),
 		eval(DriverClass, Eval, Output).
-
-
+	
 	eval(DriverClass, Eval, Output) :- 
-		\+ var(Output),
-		Output = jref(JavaResult),
-		jpl_call(DriverClass, 'evalAsObject', [{Eval}], JavaResultJpl),
-		(\+ (JavaResultJpl = '@'(null)) -> (
-			JavaResult = JavaResultJpl,
-			jpl_call(DriverClass, 'newWeakJRefTerm', [JavaResult, {JavaResult}], _)
-		)).
-
-		
-	eval(DriverClass, Eval, Output) :- 
-		\+ var(Output),
-		\+ Output = jref(_),
+		%\+ var(Output),
+		%\+ Output = jref(_),
 		jpl_call(DriverClass, 'evalAsTerm', [{Eval}], {JavaResult}),
-		set_result(Output, JavaResult).
-		
-	eval(DriverClass, Eval, Output) :- 
-		var(Output),
-		jpl_call(DriverClass, 'evalAsTerm', [{Eval}], {_}).
-
+		process_result(Output, JavaResult).
+	
 /*
 	:- multifile(logtalk::message_prefix_stream/4).
 	:- dynamic(logtalk::message_prefix_stream/4).
