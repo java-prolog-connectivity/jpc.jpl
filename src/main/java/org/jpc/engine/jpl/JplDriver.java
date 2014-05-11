@@ -28,8 +28,10 @@ import org.jpc.converter.catalog.serialized.ToSerializedConverter;
 import org.jpc.engine.listener.DriverStateListener;
 import org.jpc.engine.prolog.PrologEngine;
 import org.jpc.engine.prolog.PrologEngineInitializationException;
+import org.jpc.engine.prolog.ReturnSpecifierConstants;
 import org.jpc.engine.prolog.driver.PrologEngineFactory;
 import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
+import org.jpc.term.AbstractVar;
 import org.jpc.term.Atom;
 import org.jpc.term.Compound;
 import org.jpc.term.Term;
@@ -160,10 +162,12 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	}
 	
 	public static jpl.Term evalAsTerm(jpl.Term evalTermJpl) {
+		Term unifiedEvalTerm;
 		Term resultTerm;
 		Jpc jpc = Jpc.getDefault();
 		try {
-			Term evalTerm = JplBridge.fromJplToJpc(evalTermJpl);
+			Compound evalTerm = (Compound) JplBridge.fromJplToJpc(evalTermJpl);
+			evalTerm = (Compound) evalTerm.compile(true); //compile preserving variable names.
 			Term expTerm = evalTerm.arg(1);
 			Object result = jpc.fromTerm(expTerm); //the result of evaluating the term expression in the Java side.
 			
@@ -191,18 +195,30 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 					RefTermType refTermType = new TermToRefTermTypeConverter().fromTerm((Compound) returnSpecifierTerm, RefTermType.class, jpc);
 					resultTerm = refTermType.toTerm(result, jpc);
 				}
-			} else if(evalTerm.arg(2) instanceof Var)
+				
+				Term termToUnify;
+				if(ReturnSpecifierConstants.isReferenceModifierFlag(returnSpecifierTerm.getNameString())) {
+					termToUnify = ((Compound)returnSpecifierTerm.arg(1)).arg(1);
+				} else {
+					termToUnify = returnSpecifierTerm.arg(1);
+				}
+				termToUnify.unify(resultTerm); //will either set the unbound return variable to the expression return value or will throw an exception if it is a constant not unifiable.
+				
+			} else if(evalTerm.arg(2) instanceof AbstractVar)
 				resultTerm = Var.ANONYMOUS_VAR;
 			else
 				throw new JpcException("Wrong return specifier: " + evalTerm.arg(2));
-			if(!(resultTerm instanceof Var))
-				resultTerm = new Compound(JAVA_SIDE_RESULT_SPECIFIER, asList(resultTerm));
+			
+			unifiedEvalTerm = evalTerm.resolveBindings();
+			
+			
+
 		} catch(Exception e) {
 			logJavaSideException(e);
 			Term exceptionTerm = jpc.toTerm(e);
-			resultTerm = new Compound(JAVA_SIDE_EXCEPTION_SPECIFIER, asList(exceptionTerm));
+			unifiedEvalTerm = new Compound(JAVA_SIDE_EXCEPTION_SPECIFIER, asList(exceptionTerm));
 		}
-		return JplBridge.fromJpcToJpl(resultTerm);
+		return JplBridge.fromJpcToJpl(unifiedEvalTerm);
 	}
 	
 	public static Object returnRef(jpl.Term jplTerm) {

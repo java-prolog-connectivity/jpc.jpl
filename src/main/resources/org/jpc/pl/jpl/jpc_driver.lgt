@@ -17,7 +17,7 @@
 		jpl_call/4
 	]).
 
-
+/*
 	process_result(_, JavaResult) :- var(JavaResult).
 	process_result(_, JavaResult) :- \+ var(JavaResult), JavaResult = error(Error), throw(Error).
 	process_result(Result, JavaResult) :- \+ var(JavaResult), JavaResult = result(Returned), set_result(Result, Returned).
@@ -32,19 +32,21 @@
 	set_result(strong(jref_term(JavaResult)), JavaResult).
 	set_result(weak(jref_term(JavaResult)), JavaResult).
 	set_result(soft(jref_term(JavaResult)), JavaResult).
-
+*/
+	
+	process_result(_, error(Error)) :- throw(Error).
+	process_result(Eval, Eval).
+		
+	
 	:- public(eval/2).
 	eval(Exp, Output) :-
 		Eval = eval(Exp, Output),
 		DriverClass = class([org,jpc,engine,jpl],['JplDriver']),
 		%logtalk::print_message(comment, jpc, calling(eval(DriverClass, Eval, Output))),
-		eval(DriverClass, Eval, Output).
-	
-	eval(DriverClass, Eval, Output) :- 
-		%\+ var(Output),
-		%\+ Output = jref(_),
 		jpl_call(DriverClass, 'evalAsTerm', [{Eval}], {JavaResult}),
-		process_result(Output, JavaResult).
+		process_result(Eval, JavaResult).
+
+		
 	
 /*
 	:- multifile(logtalk::message_prefix_stream/4).
