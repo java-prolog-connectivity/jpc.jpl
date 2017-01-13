@@ -13,13 +13,13 @@ import org.jpc.term.Term;
  */
 public class JplBridge {
 
-	public static jpl.Term fromJpcToJpl(Term term) {
+	public static org.jpl7.Term fromJpcToJpl(Term term) {
 		JplTermWriter jplTermWriter = new JplTermWriter();
 		term.read(jplTermWriter);
 		return jplTermWriter.getFirst();
 	} 
 	
-	public static Term fromJplToJpc(jpl.Term term) {
+	public static Term fromJplToJpc(org.jpl7.Term term) {
 		JpcTermWriter jpcTermWriter = new JpcTermWriter();
 		new JplTermReader(term, jpcTermWriter).read();
 		return jpcTermWriter.getFirst();

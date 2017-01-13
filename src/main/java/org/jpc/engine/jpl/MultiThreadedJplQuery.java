@@ -1,5 +1,5 @@
 package org.jpc.engine.jpl;
- 
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
@@ -9,10 +9,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import org.jpc.Jpc;
+import org.jpc.internal.concurrent.ExecutionResult;
 import org.jpc.query.QueryAdapter;
 import org.jpc.query.Solution;
 import org.jpc.term.Term;
-import org.minitoolbox.concurrent.ExecutionResult;
 
 import com.google.common.base.Optional;
  

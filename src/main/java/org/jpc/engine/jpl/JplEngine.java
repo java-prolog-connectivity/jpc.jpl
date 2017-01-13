@@ -57,10 +57,10 @@ public class JplEngine extends AbstractPrologEngine {
 	
 	@Override
 	public Term asTerm(String termString, Jpc context) {
-		jpl.Term jplTerm = null;
+		org.jpl7.Term jplTerm = null;
 		try {
-			jplTerm = jpl.Util.textToTerm(termString);
-		} catch(jpl.PrologException jplException) {
+			jplTerm = org.jpl7.Util.textToTerm(termString);
+		} catch(org.jpl7.PrologException jplException) {
 			RuntimeException problem = context.fromTerm(JplBridge.fromJplToJpc(jplException.term()));
 			if(problem instanceof SyntaxError)
 				problem = new PrologParsingException(termString, problem);
@@ -84,6 +84,5 @@ public class JplEngine extends AbstractPrologEngine {
 		resourceLoader.logtalkLoad(JPL_LOGTALK_LOADER_FILE); //load Logtalk JPL specific Logtalk files.
 	}
 	
-
 
 }

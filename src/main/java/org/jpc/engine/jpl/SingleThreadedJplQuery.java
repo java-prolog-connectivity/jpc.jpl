@@ -22,8 +22,8 @@ import org.jpc.term.Term;
  */
 public class SingleThreadedJplQuery extends PrologQuery {
 
-    private jpl.Term jplGoal;
-    private jpl.Query jplQuery;
+    private org.jpl7.Term jplGoal;
+    private org.jpl7.Query jplQuery;
 
     public SingleThreadedJplQuery(JplEngine prologEngine, Term goal, boolean errorHandledQuery, Jpc context) {
         super(prologEngine, goal, errorHandledQuery, context);
@@ -55,14 +55,14 @@ public class SingleThreadedJplQuery extends PrologQuery {
     @Override
     protected Solution basicNext() {
         if(jplQuery == null) {
-            jplQuery = new jpl.Query(jplGoal);
+            jplQuery = new org.jpl7.Query(jplGoal);
         }
         Solution querySolution = null;
         try {
         	if(jplQuery.hasMoreSolutions()) {
                 Map<String, Term> nextSolution = new HashMap<>();
-                Map<String, jpl.Term> jplSolution = jplQuery.nextSolution();
-                for(Entry<String, jpl.Term> jplEntry : jplSolution.entrySet()) {
+                Map<String, org.jpl7.Term> jplSolution = jplQuery.nextSolution();
+                for(Entry<String, org.jpl7.Term> jplEntry : jplSolution.entrySet()) {
                     String varName = jplEntry.getKey();
                     Term term = JplBridge.fromJplToJpc(jplEntry.getValue());
                     nextSolution.put(varName, term);

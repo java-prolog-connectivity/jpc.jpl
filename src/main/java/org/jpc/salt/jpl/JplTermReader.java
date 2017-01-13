@@ -11,9 +11,9 @@ import org.jpc.salt.TermReader;
  */
 public class JplTermReader extends TermReader {
 
-	private jpl.Term jplTerm;
+	private org.jpl7.Term jplTerm;
 	
-	public JplTermReader(jpl.Term jplTerm, TermContentHandler contentHandler) {
+	public JplTermReader(org.jpl7.Term jplTerm, TermContentHandler contentHandler) {
 		super(contentHandler);
 		this.jplTerm = jplTerm;
 	}
@@ -23,12 +23,12 @@ public class JplTermReader extends TermReader {
 		read(jplTerm);
 	}
 	
-	private void read(jpl.Term term) {
+	private void read(org.jpl7.Term term) {
 		if(term.isInteger()) {
-			jpl.Integer jplInteger = (jpl.Integer) term;
+			org.jpl7.Integer jplInteger = (org.jpl7.Integer) term;
 			getContentHandler().startIntegerTerm(jplInteger.longValue());
 		} else 	if(term.isFloat()) {
-			jpl.Float jplFloat = (jpl.Float) term;
+			org.jpl7.Float jplFloat = (org.jpl7.Float) term;
 			getContentHandler().startFloatTerm(jplFloat.doubleValue());
 		} else if (term.isVariable()) {
 			getContentHandler().startVariable(term.name());
@@ -37,7 +37,7 @@ public class JplTermReader extends TermReader {
 		} else if(term.isCompound()) {
 			getContentHandler().startCompound();
 			getContentHandler().startAtom(term.name());
-			for(jpl.Term child : term.args()) {
+			for(org.jpl7.Term child : term.args()) {
 				read(child);
 			}
 			getContentHandler().endCompound();

@@ -18,9 +18,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 
-import jpl.JPL;
-import jpl.fli.Prolog;
-
 import org.jpc.Jpc;
 import org.jpc.JpcException;
 import org.jpc.converter.catalog.refterm.TermToRefTermTypeConverter;
@@ -31,6 +28,7 @@ import org.jpc.engine.prolog.PrologEngineInitializationException;
 import org.jpc.engine.prolog.ReturnSpecifierConstants;
 import org.jpc.engine.prolog.driver.PrologEngineFactory;
 import org.jpc.engine.prolog.driver.UniquePrologEngineDriver;
+import org.jpc.internal.collections.CollectionsUtil;
 import org.jpc.term.AbstractVar;
 import org.jpc.term.Atom;
 import org.jpc.term.Compound;
@@ -42,7 +40,8 @@ import org.jpc.util.JpcPreferences;
 import org.jpc.util.engine.supported.EngineDescription;
 import org.jpc.util.engine.supported.Swi;
 import org.jpc.util.engine.supported.Yap;
-import org.minitoolbox.collections.CollectionsUtil;
+import org.jpl7.JPL;
+import org.jpl7.fli.Prolog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,7 +160,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 			throw new JpcException("Unrecognized dialect: " + dialect + ".");
 	}
 	
-	public static jpl.Term evalAsTerm(jpl.Term evalTermJpl) {
+	public static org.jpl7.Term evalAsTerm(org.jpl7.Term evalTermJpl) {
 		Term unifiedEvalTerm;
 		Term resultTerm;
 		Jpc jpc = Jpc.getDefault();
@@ -177,7 +176,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 					resultTerm = jpc.refTerm(result); //find out if the result is already associated with a term representation.
 					if(resultTerm == null) { //the result is not associated with a term representation.
 						Compound jpcTmpTerm = jpc.newRefTerm(result); //obtaining a temporal (black box) term reference to the Java object resulting of evaluating the term expression. 
-						jpl.Term jplRefTerm = (jpl.Term)new jpl.Query("jpl_call(class([org,jpc,engine,jpl],['JplDriver']), returnRef, [{" + jpcTmpTerm.toEscapedString() + "}], JplRef)").oneSolution().get("JplRef"); //get the JPL representation of the object.
+						org.jpl7.Term jplRefTerm = (org.jpl7.Term)new org.jpl7.Query("jpl_call(class([org,jpc,engine,jpl],['JplDriver']), returnRef, [{" + jpcTmpTerm.toEscapedString() + "}], JplRef)").oneSolution().get("JplRef"); //get the JPL representation of the object.
 						jpc.forgetRefTerm(jpcTmpTerm);
 						Compound translatedJplRefTerm = (Compound) JplBridge.fromJplToJpc(jplRefTerm);
 						resultTerm = new Compound(RefTermManager.JREF_TERM_FUNCTOR_NAME, asList(translatedJplRefTerm.arg(1))); //adapting the JPL term representation to the JPC format for Prolog side references.
@@ -221,7 +220,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 		return JplBridge.fromJpcToJpl(unifiedEvalTerm);
 	}
 	
-	public static Object returnRef(jpl.Term jplTerm) {
+	public static Object returnRef(org.jpl7.Term jplTerm) {
 		Compound refTerm = (Compound) JplBridge.fromJplToJpc(jplTerm);
 		return Jpc.getDefault().resolveRefTerm(refTerm);
 	}
