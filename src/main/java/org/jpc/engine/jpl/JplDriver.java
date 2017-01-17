@@ -89,6 +89,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 			logger.warn("The directory of the native JPL library has not been configured.");
 			logger.warn("If the 'java.library.path' property is set JPL will try to find the native library from there. Otherwise from the default OS search paths."); 
 		}
+		//JPL.setTraditional();
 	}
 
 	public String getDefaultJplPath() {

@@ -1,6 +1,9 @@
 package org.jpc.salt.jpl;
 
 
+import static org.jpc.engine.prolog.PrologConstants.CONS_FUNCTOR;
+import static org.jpc.engine.prolog.PrologConstants.NIL_SYMBOL;
+
 import org.jpc.salt.TermContentHandler;
 import org.jpc.salt.TermReader;
 
@@ -33,10 +36,18 @@ public class JplTermReader extends TermReader {
 		} else if (term.isVariable()) {
 			getContentHandler().startVariable(term.name());
 		} else if (term.isAtom()) {
-			getContentHandler().startAtom(term.name());
+			if (term.isListNil()) {
+				getContentHandler().startAtom(NIL_SYMBOL);
+			} else {
+				getContentHandler().startAtom(term.name());
+			}
 		} else if(term.isCompound()) {
 			getContentHandler().startCompound();
-			getContentHandler().startAtom(term.name());
+			if (term.isListPair()) {
+				getContentHandler().startAtom(CONS_FUNCTOR);
+			} else {
+				getContentHandler().startAtom(term.name());
+			}
 			for(org.jpl7.Term child : term.args()) {
 				read(child);
 			}
