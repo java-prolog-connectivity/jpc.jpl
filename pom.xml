@@ -48,12 +48,6 @@
 			<version>0.0.1-alpha-SNAPSHOT</version>
 			 <type>test-jar</type>
 			<scope>test</scope>
-		</dependency> 
-
-		<dependency>
-			<groupId>jpl</groupId>
-			<artifactId>jpl</artifactId>
-			<version>7.0.1</version>
 		</dependency>
 
 		<dependency>
@@ -69,6 +63,12 @@
 			<version>0.0.1-alpha-SNAPSHOT</version>
 			<type>test-jar</type>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>jpl</groupId>
+			<artifactId>jpl</artifactId>
+			<version>7.0.1</version>
 		</dependency>
 	</dependencies>
 
