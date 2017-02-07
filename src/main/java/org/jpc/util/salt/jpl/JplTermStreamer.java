@@ -1,12 +1,18 @@
-package org.jpc.salt.jpl;
+package org.jpc.util.salt.jpl;
 
 import org.jpc.engine.prolog.PrologConstants;
-import org.jpc.salt.TermBuilder;
-import org.jpc.salt.TermContentHandler;
-import org.jpc.salt.TermWriter;
+import org.jpc.util.salt.TermBuilder;
+import org.jpc.util.salt.TermContentHandler;
+import org.jpc.util.salt.TermProcessor;
+import org.jpc.util.salt.TermStreamer;
 import org.jpl7.JPL;
+import org.jpl7.Term;
 
-public class JplTermWriter extends TermWriter<org.jpl7.Term> {
+public class JplTermStreamer extends TermStreamer<Term> {
+
+	public JplTermStreamer(TermProcessor<Term> termProcessor) {
+		super(termProcessor);
+	}
 
 	@Override
 	public TermContentHandler startIntegerTerm(long value) {

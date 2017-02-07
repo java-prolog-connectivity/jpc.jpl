@@ -1,6 +1,6 @@
-package org.jpc.salt.jpl;
+package org.jpc.util.salt.jpl;
 
-import org.jpc.salt.TermBuilder;
+import org.jpc.util.salt.TermBuilder;
 
 public class JplTermBuilder extends TermBuilder<org.jpl7.Term> {
 

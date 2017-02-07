@@ -1,16 +1,17 @@
-package org.jpc.salt.jpl;
+package org.jpc.util.salt.jpl;
 
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
-import org.jpc.salt.JpcTermWriter;
 import org.jpc.term.Atom;
 import org.jpc.term.Compound;
 import org.jpc.term.Float;
 import org.jpc.term.Integer;
 import org.jpc.term.Term;
 import org.jpc.term.Var;
+import org.jpc.util.salt.JpcTermStreamer;
+import org.jpc.util.salt.TermCollector;
 import org.junit.Test;
 
 public class JplTransformationTest {
@@ -20,23 +21,26 @@ public class JplTransformationTest {
 	
 	@Test
 	public void testJplToJpl() {
-		JplTermWriter termWriter = new JplTermWriter();
+		TermCollector<org.jpl7.Term> collector = new TermCollector();
+		JplTermStreamer termWriter = new JplTermStreamer(collector);
 		new JplTermReader(t1Jpl, termWriter).read();
-		assertEquals(t1Jpl, termWriter.getFirst());
+		assertEquals(t1Jpl, collector.getFirst());
 	}
 	
 	@Test
 	public void testJplToJpc() {
-		JpcTermWriter jpcTermWriter = new JpcTermWriter();
+		TermCollector<Term> collector = new TermCollector();
+		JpcTermStreamer jpcTermWriter = new JpcTermStreamer(collector);
 		new JplTermReader(t1Jpl, jpcTermWriter).read();
-		assertEquals(t1Jpc, jpcTermWriter.getFirst());
+		assertEquals(t1Jpc, collector.getFirst());
 	}
 	
 	@Test
 	public void testJpcToJpl() {
-		JplTermWriter jplTermWriter = new JplTermWriter();
+		TermCollector<org.jpl7.Term> collector = new TermCollector();
+		JplTermStreamer jplTermWriter = new JplTermStreamer(collector);
 		t1Jpc.read(jplTermWriter);
-		assertEquals(t1Jpl, jplTermWriter.getFirst());
+		assertEquals(t1Jpl, collector.getFirst());
 	}
 	
 }

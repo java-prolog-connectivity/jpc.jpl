@@ -1,11 +1,11 @@
-package org.jpc.salt.jpl;
+package org.jpc.util.salt.jpl;
 
 
 import static org.jpc.engine.prolog.PrologConstants.CONS_FUNCTOR;
 import static org.jpc.engine.prolog.PrologConstants.NIL_SYMBOL;
 
-import org.jpc.salt.TermContentHandler;
-import org.jpc.salt.TermReader;
+import org.jpc.util.salt.TermContentHandler;
+import org.jpc.util.salt.TermReader;
 
 /**
  * a SALT jpl term reader
