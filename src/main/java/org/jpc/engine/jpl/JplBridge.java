@@ -1,9 +1,10 @@
 package org.jpc.engine.jpl;
 
 
+
 import org.jpc.term.Term;
 import org.jpc.util.salt.JpcTermStreamer;
-import org.jpc.util.salt.TermCollector;
+import org.jpc.util.termprocessor.GenericTermCollector;
 import org.jpc.util.salt.jpl.JplTermReader;
 import org.jpc.util.salt.jpl.JplTermStreamer;
 
@@ -15,14 +16,14 @@ import org.jpc.util.salt.jpl.JplTermStreamer;
 public class JplBridge {
 
 	public static org.jpl7.Term fromJpcToJpl(Term term) {
-		TermCollector<org.jpl7.Term> collector = new TermCollector();
+		GenericTermCollector<org.jpl7.Term> collector = new GenericTermCollector<>();
 		JplTermStreamer jplTermWriter = new JplTermStreamer(collector);
 		term.read(jplTermWriter);
 		return collector.getFirst();
 	} 
 	
 	public static Term fromJplToJpc(org.jpl7.Term term) {
-		TermCollector<Term> collector = new TermCollector();
+		GenericTermCollector<Term> collector = new GenericTermCollector<>();
 		JpcTermStreamer jpcTermWriter = new JpcTermStreamer(collector);
 		new JplTermReader(term, jpcTermWriter).read();
 		return collector.getFirst();

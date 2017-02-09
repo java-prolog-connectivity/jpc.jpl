@@ -22,6 +22,7 @@ import org.jpc.Jpc;
 import org.jpc.JpcException;
 import org.jpc.converter.catalog.refterm.TermToRefTermTypeConverter;
 import org.jpc.converter.catalog.serialized.ToSerializedConverter;
+import org.jpc.engine.dialect.Dialect;
 import org.jpc.engine.listener.DriverStateListener;
 import org.jpc.engine.prolog.PrologEngine;
 import org.jpc.engine.prolog.PrologEngineInitializationException;
@@ -38,8 +39,6 @@ import org.jpc.term.refterm.RefTermManager;
 import org.jpc.term.refterm.RefTermType;
 import org.jpc.util.JpcPreferences;
 import org.jpc.util.engine.supported.EngineDescription;
-import org.jpc.util.engine.supported.Swi;
-import org.jpc.util.engine.supported.Yap;
 import org.jpl7.JPL;
 import org.jpl7.fli.Prolog;
 import org.slf4j.Logger;
@@ -150,12 +149,13 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	}
 	
 	
-	public static void setupFromProlog(String dialect) {
-		if(dialect.equals(Swi.SWI_DIALECT)) {
+	public static void setupFromProlog(String dialectFlag) {
+		Dialect dialect = Dialect.fromDialectFlag(dialectFlag);
+		if(dialect.equals(Dialect.SWI)) {
 			//new JplSwiDriver().createPrologEngine().withLogtalk();
 			PrologEngine pe = new JplSwiDriver().createPrologEngine();
 			pe.loadJpcForLogtalk();
-		} else if(dialect.equals(Yap.YAP_DIALECT)) {
+		} else if(dialect.equals(Dialect.YAP)) {
 			new JplYapDriver().createPrologEngine().withLogtalk();
 		} else
 			throw new JpcException("Unrecognized dialect: " + dialect + ".");
@@ -173,11 +173,11 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 			
 			if(evalTerm.arg(2) instanceof Compound) {
 				Compound returnSpecifierTerm = (Compound) evalTerm.arg(2);
-				if(returnSpecifierTerm.getNameString().equals(BB_REF_TERM_FLAG)) { //the object in the Java side should be garbage collected only if the atom representing it is garbage collected in the Prolog side.
+				if(returnSpecifierTerm.getName().equals(BB_REF_TERM_FLAG)) { //the object in the Java side should be garbage collected only if the atom representing it is garbage collected in the Prolog side.
 					resultTerm = jpc.refTerm(result); //find out if the result is already associated with a term representation.
 					if(resultTerm == null) { //the result is not associated with a term representation.
 						Compound jpcTmpTerm = jpc.newRefTerm(result); //obtaining a temporal (black box) term reference to the Java object resulting of evaluating the term expression. 
-						org.jpl7.Term jplRefTerm = (org.jpl7.Term)new org.jpl7.Query("jpl_call(class([org,jpc,engine,jpl],['JplDriver']), returnRef, [{" + jpcTmpTerm.toEscapedString() + "}], JplRef)").oneSolution().get("JplRef"); //get the JPL representation of the object.
+						org.jpl7.Term jplRefTerm = (org.jpl7.Term) new org.jpl7.Query("jpl_call(class([org,jpc,engine,jpl],['JplDriver']), returnRef, [{" + jpcTmpTerm.toEscapedString() + "}], JplRef)").oneSolution().get("JplRef"); //get the JPL representation of the object.
 						jpc.forgetRefTerm(jpcTmpTerm);
 						Compound translatedJplRefTerm = (Compound) JplBridge.fromJplToJpc(jplRefTerm);
 						resultTerm = new Compound(RefTermManager.JREF_TERM_FUNCTOR_NAME, asList(translatedJplRefTerm.arg(1))); //adapting the JPL term representation to the JPC format for Prolog side references.
@@ -187,9 +187,9 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 						if (!Prolog.is_tag(tag))
 							throw new JpcException("Attempt to use a Prolog side reference term with an object already associated with the term: " + resultTerm + ".");
 					}
-				} else if(returnSpecifierTerm.getNameString().equals(RETURN_TERM_SPECIFIER)) {
+				} else if(returnSpecifierTerm.getName().equals(RETURN_TERM_SPECIFIER)) {
 					resultTerm = jpc.toTerm(result);
-				} else if(returnSpecifierTerm.getNameString().equals(RETURN_SERIALIZED_SPECIFIER)) {
+				} else if(returnSpecifierTerm.getName().equals(RETURN_SERIALIZED_SPECIFIER)) {
 					resultTerm = new ToSerializedConverter().toTerm((Serializable)result, Compound.class, jpc);
 				} else {
 					RefTermType refTermType = new TermToRefTermTypeConverter().fromTerm((Compound) returnSpecifierTerm, RefTermType.class, jpc);
@@ -197,7 +197,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 				}
 				
 				Term termToUnify;
-				if(ReturnSpecifierConstants.isReferenceModifierFlag(returnSpecifierTerm.getNameString())) {
+				if(ReturnSpecifierConstants.isReferenceModifierFlag(returnSpecifierTerm.getName())) {
 					termToUnify = ((Compound)returnSpecifierTerm.arg(1)).arg(1);
 				} else {
 					termToUnify = returnSpecifierTerm.arg(1);

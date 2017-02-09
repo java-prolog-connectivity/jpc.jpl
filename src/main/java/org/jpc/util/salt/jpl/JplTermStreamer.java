@@ -3,14 +3,14 @@ package org.jpc.util.salt.jpl;
 import org.jpc.engine.prolog.PrologConstants;
 import org.jpc.util.salt.TermBuilder;
 import org.jpc.util.salt.TermContentHandler;
-import org.jpc.util.salt.TermProcessor;
+import org.jpc.util.termprocessor.GenericTermProcessor;
 import org.jpc.util.salt.TermStreamer;
 import org.jpl7.JPL;
 import org.jpl7.Term;
 
 public class JplTermStreamer extends TermStreamer<Term> {
 
-	public JplTermStreamer(TermProcessor<Term> termProcessor) {
+	public JplTermStreamer(GenericTermProcessor<Term> termProcessor) {
 		super(termProcessor);
 	}
 

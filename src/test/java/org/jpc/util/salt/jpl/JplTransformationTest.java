@@ -11,7 +11,7 @@ import org.jpc.term.Integer;
 import org.jpc.term.Term;
 import org.jpc.term.Var;
 import org.jpc.util.salt.JpcTermStreamer;
-import org.jpc.util.salt.TermCollector;
+import org.jpc.util.termprocessor.GenericTermCollector;
 import org.junit.Test;
 
 public class JplTransformationTest {
@@ -21,7 +21,7 @@ public class JplTransformationTest {
 	
 	@Test
 	public void testJplToJpl() {
-		TermCollector<org.jpl7.Term> collector = new TermCollector();
+		GenericTermCollector<org.jpl7.Term> collector = new GenericTermCollector<>();
 		JplTermStreamer termWriter = new JplTermStreamer(collector);
 		new JplTermReader(t1Jpl, termWriter).read();
 		assertEquals(t1Jpl, collector.getFirst());
@@ -29,7 +29,7 @@ public class JplTransformationTest {
 	
 	@Test
 	public void testJplToJpc() {
-		TermCollector<Term> collector = new TermCollector();
+		GenericTermCollector<Term> collector = new GenericTermCollector<>();
 		JpcTermStreamer jpcTermWriter = new JpcTermStreamer(collector);
 		new JplTermReader(t1Jpl, jpcTermWriter).read();
 		assertEquals(t1Jpc, collector.getFirst());
@@ -37,7 +37,7 @@ public class JplTransformationTest {
 	
 	@Test
 	public void testJpcToJpl() {
-		TermCollector<org.jpl7.Term> collector = new TermCollector();
+		GenericTermCollector<org.jpl7.Term> collector = new GenericTermCollector<>();
 		JplTermStreamer jplTermWriter = new JplTermStreamer(collector);
 		t1Jpc.read(jplTermWriter);
 		assertEquals(t1Jpl, collector.getFirst());
