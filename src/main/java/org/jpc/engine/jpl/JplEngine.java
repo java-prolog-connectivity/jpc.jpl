@@ -37,7 +37,7 @@ public class JplEngine extends AbstractPrologEngine {
 	public void close() {
 		throw new UnsupportedOperationException();
 //		logger.info("Shutting down the JPL prolog engine ...");
-//		boolean result = query(new Atom("halt")).hasSolution(); //WARNING: the Java process would also dye. Commented out until finding another way to halt the JPL logic engine.
+//		boolean result = query(new Atom("halt")).hasSolution(); //WARNING: the Java process would also die. Commented out until finding another way to halt the JPL logic engine.
 //		if(result)
 //			logger.info("A Jpl prolog engine has been shut down.");
 //		else

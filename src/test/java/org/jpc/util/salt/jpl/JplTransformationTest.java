@@ -11,6 +11,7 @@ import org.jpc.term.Integer;
 import org.jpc.term.Term;
 import org.jpc.term.Var;
 import org.jpc.util.salt.JpcTermStreamer;
+import org.jpc.util.termprocessor.JpcTermCollector;
 import org.jpc.util.termprocessor.GenericTermCollector;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class JplTransformationTest {
 	
 	@Test
 	public void testJplToJpc() {
-		GenericTermCollector<Term> collector = new GenericTermCollector<>();
+		JpcTermCollector collector = new JpcTermCollector();
 		JpcTermStreamer jpcTermWriter = new JpcTermStreamer(collector);
 		new JplTermReader(t1Jpl, jpcTermWriter).read();
 		assertEquals(t1Jpc, collector.getFirst());

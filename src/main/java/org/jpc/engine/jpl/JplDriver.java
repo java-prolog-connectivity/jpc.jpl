@@ -6,6 +6,7 @@ import static org.jpc.engine.prolog.ReturnSpecifierConstants.RETURN_SERIALIZED_S
 import static org.jpc.engine.prolog.ReturnSpecifierConstants.RETURN_TERM_SPECIFIER;
 import static org.jpc.engine.prolog.ThreadModel.MULTI_THREADED;
 import static org.jpc.engine.prolog.ThreadModel.SINGLE_THREADED;
+import static org.jpc.term.Var.dontCare;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,7 +35,6 @@ import org.jpc.term.AbstractVar;
 import org.jpc.term.Atom;
 import org.jpc.term.Compound;
 import org.jpc.term.Term;
-import org.jpc.term.Var;
 import org.jpc.term.refterm.RefTermManager;
 import org.jpc.term.refterm.RefTermType;
 import org.jpc.util.JpcPreferences;
@@ -204,15 +204,13 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 				}
 				termToUnify.unify(resultTerm); //will either set the unbound return variable to the expression return value or will throw an exception if it is a constant not unifiable.
 				
-			} else if(evalTerm.arg(2) instanceof AbstractVar)
-				resultTerm = Var.ANONYMOUS_VAR;
-			else
+			} else if(evalTerm.arg(2) instanceof AbstractVar) {
+				resultTerm = dontCare();
+			}
+			else {
 				throw new JpcException("Wrong return specifier: " + evalTerm.arg(2));
-			
+			}
 			unifiedEvalTerm = evalTerm.resolveBindings();
-			
-			
-
 		} catch(Exception e) {
 			logJavaSideException(e);
 			Term exceptionTerm = jpc.toTerm(e);
