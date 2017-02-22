@@ -2,6 +2,7 @@ package org.jpc.engine.jpl;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -13,8 +14,6 @@ import org.jpc.internal.concurrent.ExecutionResult;
 import org.jpc.query.QueryAdapter;
 import org.jpc.query.Solution;
 import org.jpc.term.Term;
-
-import com.google.common.base.Optional;
  
 /**
  * This class wraps a JPL query in such a way that it does not have the JPL limitations regarding multithreading support.
