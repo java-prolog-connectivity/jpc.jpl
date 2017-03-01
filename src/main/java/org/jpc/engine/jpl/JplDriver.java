@@ -21,8 +21,9 @@ import java.util.TimeZone;
 
 import org.jpc.Jpc;
 import org.jpc.JpcException;
-import org.jpc.converter.catalog.refterm.TermToRefTermTypeConverter;
-import org.jpc.converter.catalog.serialized.ToSerializedConverter;
+import org.jpc.JpcImpl;
+import org.jpc.mapping.converter.catalog.refterm.TermToRefTermTypeConverter;
+import org.jpc.mapping.converter.catalog.serialized.ToSerializedConverter;
 import org.jpc.engine.dialect.Dialect;
 import org.jpc.engine.listener.DriverStateListener;
 import org.jpc.engine.prolog.PrologEngine;
@@ -164,7 +165,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	public static org.jpl7.Term evalAsTerm(org.jpl7.Term evalTermJpl) {
 		Term unifiedEvalTerm;
 		Term resultTerm;
-		Jpc jpc = Jpc.getDefault();
+		Jpc jpc = JpcImpl.getDefault();
 		try {
 			Compound evalTerm = (Compound) JplBridge.fromJplToJpc(evalTermJpl);
 			evalTerm = (Compound) evalTerm.compile(true); //compile preserving variable names.
@@ -221,7 +222,7 @@ public abstract class JplDriver extends UniquePrologEngineDriver<JplEngine> {
 	
 	public static Object returnRef(org.jpl7.Term jplTerm) {
 		Compound refTerm = (Compound) JplBridge.fromJplToJpc(jplTerm);
-		return Jpc.getDefault().resolveRefTerm(refTerm);
+		return JpcImpl.getDefault().resolveRefTerm(refTerm);
 	}
 	
 	/*
